@@ -42,6 +42,12 @@ export default {
       if (path === '/api/posts' && request.method === 'POST') return await postCreate(request, env, cors);
       if (path === '/api/site' && request.method === 'GET') return await getSitePublic(env, cors);
 
+      if (path === '/api/auth/google-url' && request.method === 'GET') return await googleUrl(env, cors);
+      if (path === '/api/auth/google-callback' && request.method === 'POST') return await googleCallback(request, env, cors);
+      if (path === '/api/auth/google-link' && request.method === 'POST') return await googleLink(request, env, cors);
+
+      if (path === '/api/tg/webhook' && request.method === 'POST') return await tgWebhook(request, env, cors);
+
       return json({ error: 'Not found: ' + path }, 404, cors);
     } catch (e) {
       return json({ error: e.message || 'Server error' }, 500, cors);
@@ -113,10 +119,12 @@ async function tgVerify(request, env, cors){
     return json({ error: 'Ты не в списке администраторов' }, 403, cors);
   }
 
-  if(body.password){
-    if(!env.ADMIN_PASSWORD || body.password !== env.ADMIN_PASSWORD){
+  if (body.password) {
+    if (!env.ADMIN_PASSWORD || body.password !== env.ADMIN_PASSWORD) {
       return json({ error: 'Неверный пароль' }, 401, cors);
     }
+  } else if (env.ADMIN_PASSWORD) {
+    return json({ error: 'Требуется админ-пароль' }, 401, cors);
   }
 
   const code = String(Math.floor(100000 + Math.random() * 900000));
@@ -331,4 +339,164 @@ async function getAdmins(env){
     const arr = JSON.parse(raw);
     return arr.map(Number).filter(n => !isNaN(n));
   } catch(e){ return []; }
+}
+
+async function googleUrl(env, cors) {
+  if (!env.GOOGLE_CLIENT_ID) return json({ error: 'Google OAuth не настроен' }, 500, cors);
+  const redirectUri = env.GOOGLE_REDIRECT_URI || '';
+  if (!redirectUri) return json({ error: 'Нет GOOGLE_REDIRECT_URI' }, 500, cors);
+  const params = new URLSearchParams({
+    client_id: env.GOOGLE_CLIENT_ID,
+    redirect_uri: redirectUri,
+    response_type: 'code',
+    scope: 'openid email profile',
+    access_type: 'online',
+    prompt: 'select_account'
+  });
+  return json({ url: 'https://accounts.google.com/o/oauth2/v2/auth?' + params.toString() }, 200, cors);
+}
+
+async function googleCallback(request, env, cors) {
+  const { code, redirect_uri } = await request.json();
+  if (!code) return json({ error: 'No code' }, 400, cors);
+  const ru = redirect_uri || env.GOOGLE_REDIRECT_URI;
+
+  const tokenRes = await fetch('https://oauth2.googleapis.com/token', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({
+      code,
+      client_id: env.GOOGLE_CLIENT_ID,
+      client_secret: env.GOOGLE_CLIENT_SECRET,
+      redirect_uri: ru,
+      grant_type: 'authorization_code'
+    })
+  });
+  const tokens = await tokenRes.json();
+  if (!tokenRes.ok || !tokens.id_token) {
+    return json({ error: 'Google token error: ' + (tokens.error || 'unknown') }, 401, cors);
+  }
+
+  const infoRes = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+    headers: { Authorization: 'Bearer ' + tokens.access_token }
+  });
+  const info = await infoRes.json();
+  if (!info.email) return json({ error: 'Google userinfo error' }, 401, cors);
+
+  // Google-пользователь хранится в KV: google:<email> -> { tg_id } (после привязки)
+  const link = await env.AZFW_KV.get('google:' + info.email);
+  if (link) {
+    // Уже привязан к TG — выдаём JWT сразу
+    const tgUser = JSON.parse(link);
+    const ip = request.headers.get('CF-Connecting-IP') || '0.0.0.0';
+    const token = await signJwt({
+      sub: tgUser.id,
+      username: tgUser.username || ('g:' + info.email),
+      name: tgUser.first_name || info.name || '',
+      ip,
+      iat: Math.floor(Date.now() / 1000),
+      exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SEC
+    }, env.JWT_SECRET);
+    return json({ status: 'ok', token, username: tgUser.username || info.email }, 200, cors);
+  }
+
+  // Не привязан — выдаём ссылку на бота + код привязки
+  const linkCode = String(Math.floor(100000 + Math.random() * 900000));
+  const linkToken = crypto.randomUUID();
+  await env.AZFW_KV.put('g-link:' + linkToken, JSON.stringify({
+    email: info.email,
+    name: info.name || '',
+    code: linkCode,
+    created_at: Date.now()
+  }), { expirationTtl: 15 * 60 });
+
+  // Сообщим привязать через бота. Указываем юзеру короткий код.
+  return json({
+    status: 'link_required',
+    link_token: linkToken,
+    link_code: linkCode,
+    email: info.email,
+    bot_username: env.BOT_USERNAME || 'arizona_faraway26_bot',
+    message: 'Отправь этот код боту в ЛС, чтобы привязать Google-аккаунт.'
+  }, 200, cors);
+}
+
+async function googleLink(request, env, cors) {
+  // Этот эндпоинт вызывается ботом (см. вебхук ниже) или из админки вручную:
+  // { link_token, tg_user: { id, username, first_name } }
+  // Проверяем связь: link_token валиден, привязываем google:<email> -> tg_user
+  const body = await request.json();
+  const { link_token, tg_user } = body;
+  if (!link_token || !tg_user || !tg_user.id) return json({ error: 'No data' }, 400, cors);
+
+  const raw = await env.AZFW_KV.get('g-link:' + link_token);
+  if (!raw) return json({ error: 'Ссылка истекла' }, 400, cors);
+  const info = JSON.parse(raw);
+  await env.AZFW_KV.delete('g-link:' + link_token);
+
+  await env.AZFW_KV.put('google:' + info.email, JSON.stringify({
+    id: tg_user.id,
+    username: tg_user.username || ('id' + tg_user.id),
+    first_name: tg_user.first_name || info.name || ''
+  }));
+
+  const ip = request.headers.get('CF-Connecting-IP') || '0.0.0.0';
+  const token = await signJwt({
+    sub: tg_user.id,
+    username: tg_user.username || ('id' + tg_user.id),
+    name: tg_user.first_name || info.name || '',
+    ip,
+    iat: Math.floor(Date.now() / 1000),
+    exp: Math.floor(Date.now() / 1000) + SESSION_TTL_SEC
+  }, env.JWT_SECRET);
+
+  return json({ status: 'ok', token, username: tg_user.username || ('id' + tg_user.id) }, 200, cors);
+}
+
+/* ============================================================
+   Вебхук Telegram (для команды /start <код> от Google-привязки)
+   Разворачивается отдельно, ставится через setWebhook:
+     https://api.telegram.org/bot<BOT_TOKEN>/setWebhook?url=<URL_ВОРКЕРА>/api/tg/webhook
+   ============================================================ */
+async function tgWebhook(request, env, cors) {
+  const update = await request.json().catch(() => null);
+  if (!update || !update.message) return json({ ok: true }, 200, cors);
+
+  const msg = update.message;
+  const text = (msg.text || '').trim();
+  const chatId = msg.chat.id;
+  const from = msg.from || {};
+
+  // /start <code>
+  const m = text.match(/^\/start\s+(\d{6})$/);
+  if (!m) {
+    if (text === '/start') {
+      await sendTelegramMessage(env, chatId,
+        'Привет! Я — бот сайта <b>Arizona Faraway — 26</b>.\n\n' +
+        'Если ты привязываешь Google-аккаунт, отправь мне код из браузера.');
+    }
+    return json({ ok: true }, 200, cors);
+  }
+
+  const code = m[1];
+  // Найдём pending-link по коду
+  const list = await env.AZFW_KV.list({ prefix: 'g-link:' });
+  for (const k of list.keys) {
+    const raw = await env.AZFW_KV.get(k.name);
+    if (!raw) continue;
+    const info = JSON.parse(raw);
+    if (String(info.code) === code) {
+      await env.AZFW_KV.delete(k.name);
+      await env.AZFW_KV.put('google:' + info.email, JSON.stringify({
+        id: from.id,
+        username: from.username || ('id' + from.id),
+        first_name: from.first_name || info.name || ''
+      }));
+      await sendTelegramMessage(env, chatId,
+        '✅ Google-аккаунт <b>' + info.email + '</b> привязан. Можешь вернуться на сайт.');
+      return json({ ok: true }, 200, cors);
+    }
+  }
+  await sendTelegramMessage(env, chatId, '❌ Код не найден или истёк. Попробуй ещё раз с сайта.');
+  return json({ ok: true }, 200, cors);
 }
