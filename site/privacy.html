@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="ocean">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<title>Политика конфиденциальности · Arizona Faraway — 26</title>
+<meta name="description" content="Политика конфиденциальности фан-сайта Arizona Faraway — 26: какие данные обрабатываются, а какие — нет.">
+<link rel="stylesheet" href="theme.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:90px}
+  body{
+    font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg-0);color:var(--text);
+    line-height:1.7;min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    transition:background .4s, color .4s;
+  }
+  .bg-layer{
+    position:fixed;inset:0;z-index:-1;overflow:hidden;
+    background:var(--bg-image), var(--bg-0);
+  }
+  .bg-layer::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+  }
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;animation:float 26s ease-in-out infinite}
+  .orb.o1{width:420px;height:420px;background:var(--green);top:-120px;left:-110px}
+  .orb.o2{width:360px;height:360px;background:var(--violet);bottom:8%;right:-100px;animation-delay:-9s}
+  @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}}
+
+  .announce{
+    background:linear-gradient(90deg,
+      color-mix(in srgb, var(--green) 12%, transparent),
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      color-mix(in srgb, var(--violet) 12%, transparent));
+    border-bottom:1px solid color-mix(in srgb, var(--green) 35%, transparent);
+    padding:9px 20px;font-size:13px;text-align:center;
+    position:relative;z-index:60;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  .announce-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .announce a{color:var(--green);text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+  .announce .label{color:var(--text-2)}
+  .announce .dot-live{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green);animation:pulse-dot 1.8s ease-in-out infinite}
+  @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+  .nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    background:color-mix(in srgb, var(--bg-0) 82%, transparent);
+    border-bottom:1px solid var(--border);
+    padding:14px 22px;
+  }
+  .nav-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:18px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15px;text-decoration:none;color:var(--text)}
+  .brand .logo{width:38px;height:38px;background:linear-gradient(135deg,var(--green),var(--accent));border-radius:11px;display:grid;place-items:center;font-size:19px;box-shadow:0 0 22px color-mix(in srgb, var(--green) 40%, transparent)}
+  .brand-text{display:flex;flex-direction:column;line-height:1.15}
+  .brand-text .t{font-size:14.5px;font-weight:800}
+  .brand-text .s{font-size:11px;color:var(--dim);font-weight:500}
+  .nav-back{margin-left:auto;color:var(--text-2);text-decoration:none;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:9px;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+  .nav-back:hover{color:var(--text);background:color-mix(in srgb, var(--accent) 12%, transparent)}
+
+  .wrap{max-width:900px;margin:0 auto;padding:56px 22px 100px;position:relative;z-index:2}
+
+  .hero{text-align:center;margin-bottom:44px}
+  .hero .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:color-mix(in srgb, var(--green) 10%, transparent);
+    border:1px solid color-mix(in srgb, var(--green) 40%, transparent);
+    color:var(--green);
+    font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+    padding:7px 18px;border-radius:999px;margin-bottom:20px;
+  }
+  h1.hero-title{
+    font-size:clamp(30px,5vw,46px);font-weight:900;letter-spacing:-1.2px;line-height:1.1;
+    background:linear-gradient(135deg,var(--text) 0%,var(--green) 50%,var(--accent-2) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin-bottom:14px;
+  }
+  .hero-desc{color:var(--text-2);font-size:15.5px;max-width:640px;margin:0 auto}
+
+  .toc{
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--card-2) 60%, transparent));
+    border:1px solid var(--border);border-radius:16px;
+    padding:20px 24px;margin-bottom:26px;
+  }
+  .toc .toc-title{
+    font-size:12px;text-transform:uppercase;letter-spacing:1.2px;
+    color:var(--dim);font-weight:700;margin-bottom:12px;
+  }
+  .toc ol{
+    list-style:none;counter-reset:toc;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 18px;
+  }
+  .toc li{counter-increment:toc;font-size:13.5px}
+  .toc li::before{content:counter(toc) ". ";color:var(--green);font-weight:700;margin-right:4px}
+  .toc a{color:var(--text-2);text-decoration:none;transition:.2s}
+  .toc a:hover{color:var(--green)}
+
+  .panel{
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--card-2) 60%, transparent));
+    border:1px solid var(--border);border-radius:20px;
+    padding:34px 36px;margin-bottom:20px;
+    scroll-margin-top:90px;
+  }
+  .panel h2{
+    font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:16px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .panel h2 .num{
+    width:34px;height:34px;border-radius:10px;
+    background:linear-gradient(135deg,var(--green),var(--accent));
+    color:#fff;font-size:14px;font-weight:800;
+    display:grid;place-items:center;flex-shrink:0;
+    box-shadow:0 6px 20px color-mix(in srgb, var(--green) 40%, transparent);
+  }
+  .panel h3{
+    font-size:15.5px;font-weight:700;margin:20px 0 10px;
+    color:var(--green);letter-spacing:-.2px;
+  }
+  .panel p{color:var(--text-2);font-size:14.5px;margin-bottom:12px;line-height:1.75}
+  .panel p:last-child{margin-bottom:0}
+  .panel ul{list-style:none;margin:10px 0 14px;padding:0}
+  .panel ul li{
+    color:var(--text-2);font-size:14.5px;
+    padding:8px 0 8px 30px;position:relative;line-height:1.65;
+  }
+  .panel ul li::before{
+    content:'✓';
+    position:absolute;left:4px;top:8px;
+    color:var(--green);font-weight:800;font-size:13px;
+  }
+  .panel ul.cross li::before{content:'✕';color:var(--red)}
+  .panel ul.check li::before{content:'✓';color:var(--green)}
+  .panel b, .panel strong{color:var(--text);font-weight:700}
+  .panel code{
+    font-family:'JetBrains Mono','Consolas',monospace;
+    background:color-mix(in srgb, var(--accent) 10%, transparent);
+    padding:1px 7px;border-radius:5px;font-size:13px;
+    color:var(--accent-3);
+  }
+  .panel a{color:var(--accent-2);text-decoration:none;font-weight:600;border-bottom:1px dashed var(--accent-2)}
+  .panel a:hover{color:var(--accent-3);border-bottom-style:solid}
+
+  .notice{
+    background:linear-gradient(135deg, color-mix(in srgb, var(--green) 8%, transparent), color-mix(in srgb, var(--green) 2%, transparent));
+    border:1px solid color-mix(in srgb, var(--green) 35%, transparent);
+    border-left:3px solid var(--green);
+    border-radius:14px;padding:18px 22px;
+    margin:18px 0;display:flex;gap:14px;align-items:flex-start;
+  }
+  .notice.warn{
+    background:linear-gradient(135deg, color-mix(in srgb, var(--yellow) 8%, transparent), color-mix(in srgb, var(--yellow) 2%, transparent));
+    border-color:color-mix(in srgb, var(--yellow) 35%, transparent);
+    border-left-color:var(--yellow);
+  }
+  .notice.info{
+    background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), color-mix(in srgb, var(--accent) 2%, transparent));
+    border-color:color-mix(in srgb, var(--accent) 35%, transparent);
+    border-left-color:var(--accent);
+  }
+  .notice .ico{
+    width:38px;height:38px;flex-shrink:0;
+    background:rgba(255,255,255,.05);
+    border:1px solid var(--border);
+    border-radius:10px;display:grid;place-items:center;font-size:17px;
+  }
+  .notice .txt h4{font-size:14px;font-weight:800;margin-bottom:5px;color:var(--text)}
+  .notice.warn .txt h4{color:var(--yellow)}
+  .notice.info .txt h4{color:var(--accent-2)}
+  .notice:not(.warn):not(.info) .txt h4{color:var(--green)}
+  .notice .txt p{font-size:13.5px;color:var(--text-2);margin:0;line-height:1.65}
+
+  .updated{
+    text-align:center;color:var(--dim);font-size:13px;
+    padding:20px 0 0;border-top:1px solid var(--border);margin-top:12px;
+  }
+
+  footer{
+    margin-top:40px;padding-top:30px;border-top:1px solid var(--border);
+    text-align:center;color:var(--dim);font-size:13px;
+  }
+  footer .legal-links{
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+    margin-bottom:16px;
+  }
+  footer .legal-links a{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:8px 16px;border-radius:10px;
+    background:color-mix(in srgb, var(--card) 60%, transparent);
+    border:1px solid var(--border);
+    color:var(--text-2);text-decoration:none;
+    font-size:12.5px;font-weight:600;transition:.25s;
+  }
+  footer .legal-links a:hover{
+    border-color:var(--green);color:var(--green);
+    transform:translateY(-2px);
+  }
+  footer .legal-links a.active{
+    border-color:var(--green);color:var(--green);
+    box-shadow:0 0 0 1px color-mix(in srgb, var(--green) 30%, transparent);
+  }
+
+  @media (max-width:640px){
+    .panel{padding:24px 22px;border-radius:16px}
+    .wrap{padding:36px 16px 80px}
+    .nav{padding:12px 16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+</div>
+
+<div class="announce">
+  <div class="announce-inner">
+    <span class="dot-live"></span>
+    <span class="label">Приватность —</span>
+    <a href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">Arizona Faraway — 26</a>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="logo">🔒</span>
+      <span class="brand-text">
+        <span class="t">Arizona Faraway — 26</span>
+        <span class="s">политика конфиденциальности</span>
+      </span>
+    </a>
+    <a class="nav-back" href="index.html">← На главную</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="badge">🔒 Приватность</div>
+    <h1 class="hero-title">Политика конфиденциальности</h1>
+    <p class="hero-desc">Описание того, какие данные обрабатывает сайт Arizona Faraway — 26, а какие — нет.</p>
+  </header>
+
+  <div class="toc">
+    <div class="toc-title">Содержание</div>
+    <ol>
+      <li><a href="#p1">Область действия</a></li>
+      <li><a href="#p2">Какие данные мы НЕ собираем</a></li>
+      <li><a href="#p3">Какие данные всё-таки обрабатываются</a></li>
+      <li><a href="#p4">Локальное хранилище браузера</a></li>
+      <li><a href="#p5">Авторизация через Telegram</a></li>
+      <li><a href="#p6">Авторизация через GitHub</a></li>
+      <li><a href="#p7">Формы Сайта (жалобы, заявки, предложка)</a></li>
+      <li><a href="#p8">Cookies и сторонние сервисы</a></li>
+      <li><a href="#p9">Права Пользователя</a></li>
+      <li><a href="#p10">Дети и несовершеннолетние</a></li>
+      <li><a href="#p11">Безопасность</a></li>
+      <li><a href="#p12">Изменения Политики</a></li>
+      <li><a href="#p13">Контакты</a></li>
+    </ol>
+  </div>
+
+  <div class="panel" id="p1">
+    <h2><span class="num">1</span> Область действия</h2>
+    <p>Настоящая Политика конфиденциальности описывает, как фан-сайт <b>Arizona Faraway — 26</b> обращается с данными Пользователя. Документ является неотъемлемой частью <a href="terms.html">Пользовательского соглашения</a> и применяется ко всем страницам Сайта.</p>
+    <p>Политика составлена с учётом принципа минимизации данных: мы обрабатываем только те сведения, без которых сайт не может работать, и только если это прямо не запрещено.</p>
+  </div>
+
+  <div class="panel" id="p2">
+    <h2><span class="num">2</span> Какие данные мы НЕ собираем</h2>
+    <div class="notice">
+      <div class="ico">🛡️</div>
+      <div class="txt">
+        <h4>Сайт НЕ собирает персональные данные</h4>
+        <p>Мы не используем системы веб-аналитики, рекламные трекеры, cookie-профилирование и не храним IP-адреса посетителей.</p>
+      </div>
+    </div>
+    <p>В частности, Сайт <b>не</b> собирает и <b>не</b> хранит:</p>
+    <ul class="cross">
+      <li>IP-адреса и данные геолокации;</li>
+      <li>email-адреса и телефоны, если вы не указали их добровольно в форме;</li>
+      <li>пароли от сторонних сервисов;</li>
+      <li>cookie-файлы аналитики и рекламы;</li>
+      <li>отпечатки браузера и устройства;</li>
+      <li>историю ваших переходов между страницами.</li>
+    </ul>
+    <p>На Сайте отсутствуют:</p>
+    <ul class="cross">
+      <li>Google Analytics, Яндекс.Метрика и им подобные системы;</li>
+      <li>пиксели социальных сетей (Facebook Pixel, VK Pixel и другие);</li>
+      <li>сторонние рекламные баннеры и партнёрские скрипты.</li>
+    </ul>
+  </div>
+
+  <div class="panel" id="p3">
+    <h2><span class="num">3</span> Какие данные всё-таки обрабатываются</h2>
+    <p>Несмотря на минимизацию, часть данных всё же неизбежно участвует в работе Сайта:</p>
+    <h3>Технические данные</h3>
+    <ul class="check">
+      <li>Запросы к статическим файлам Сайта (HTML, CSS, JS) — обрабатываются хостинг-провайдером в объёме, необходимом для доставки контента.</li>
+      <li>Локальные настройки Пользователя (тема оформления, черновики) — хранятся в браузере и не передаются на сервер.</li>
+    </ul>
+    <h3>Данные, которые Пользователь вводит сам</h3>
+    <ul class="check">
+      <li>Текст жалобы, заявки или предложки — передаётся в редакцию по каналу, инициированному самим Пользователем.</li>
+      <li>Telegram-ID / username и имя профиля — только при добровольной авторизации на служебной странице.</li>
+      <li>GitHub Personal Access Token — только при добровольном использовании панели управления.</li>
+    </ul>
+    <div class="notice warn">
+      <div class="ico">⚠️</div>
+      <div class="txt">
+        <h4>Важно</h4>
+        <p>Мы <b>никогда</b> не запрашиваем пароли, коды из SMS, данные банковских карт и любую платёжную информацию. Если кто-то от имени Сайта требует такие данные — это мошенничество.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="p4">
+    <h2><span class="num">4</span> Локальное хранилище браузера</h2>
+    <p>Сайт использует <b>localStorage</b> — встроенное хранилище браузера, доступное только на вашем устройстве. Оно не отправляется на сервер и не доступно другим сайтам.</p>
+    <p>В localStorage могут сохраняться:</p>
+    <ul>
+      <li>выбранная тема оформления (ключ <code>azfw26_theme</code>);</li>
+      <li>признак текущей сессии администратора, если вы авторизовались (ключ <code>azfw26_admin_session</code>);</li>
+      <li>черновики записей в панели управления (ключ <code>azfw26_draft</code>);</li>
+      <li>ранее введённые данные о пользователе при авторизации через Telegram.</li>
+    </ul>
+    <p>Вы можете в любой момент очистить localStorage средствами браузера (<b>Настройки → Данные сайтов</b>) или кнопкой «Выйти» в панели управления.</p>
+  </div>
+
+  <div class="panel" id="p5">
+    <h2><span class="num">5</span> Авторизация через Telegram</h2>
+    <p>На служебной странице <code>admin.html</code> доступен вход через Telegram. Авторизация может проходить в двух форматах:</p>
+    <ul>
+      <li>через Telegram WebApp (если сайт открыт внутри Telegram);</li>
+      <li>через официальный Telegram Login Widget.</li>
+    </ul>
+    <p>Telegram передаёт нам минимальный набор данных:</p>
+    <ul class="check">
+      <li>числовой ID;</li>
+      <li>username;</li>
+      <li>имя и (опционально) фамилию;</li>
+      <li>ссылку на аватар (если открыт доступ).</li>
+    </ul>
+    <p>Эти данные сохраняются <b>только в localStorage вашего браузера</b>. Мы не пересылаем их третьим лицам и не храним на своих серверах. Выход из панели управления удаляет сохранённые данные.</p>
+    <p>Используя вход через Telegram, вы также принимаете правила самого Telegram — они регулируются отдельными документами Telegram.</p>
+  </div>
+
+  <div class="panel" id="p6">
+    <h2><span class="num">6</span> Авторизация через GitHub</h2>
+    <p>Для работы панели управления поддерживается вход через <b>GitHub Personal Access Token</b>. Токен позволяет панели отправлять коммиты в репозиторий с материалами Сайта.</p>
+    <p>Как мы обращаемся с токеном:</p>
+    <ul class="cross">
+      <li>токен сохраняется <b>только в localStorage</b> вашего браузера;</li>
+      <li>токен отправляется <b>исключительно</b> на <code>api.github.com</code>;</li>
+      <li>мы <b>не имеем</b> доступа к токену и не храним его на своих серверах.</li>
+    </ul>
+    <p>Вы можете отозвать токен в настройках GitHub в любой момент — после этого панель перестанет отправлять коммиты. Выход из панели удаляет токен из браузера.</p>
+  </div>
+
+  <div class="panel" id="p7">
+    <h2><span class="num">7</span> Формы Сайта (жалобы, заявки, предложка)</h2>
+    <p>Через формы Сайта вы можете добровольно передать редакции:</p>
+    <ul class="check">
+      <li>текст жалобы на игрока;</li>
+      <li>заявку на собеседование (в том числе во фракции);</li>
+      <li>предложение по улучшению сервера;</li>
+      <li>иные сведения, которые вы решили сообщить.</li>
+    </ul>
+    <p>Мы рекомендуем <b>не передавать</b> через формы:</p>
+    <ul class="cross">
+      <li>пароли и коды из SMS;</li>
+      <li>данные банковских карт и платёжные реквизиты;</li>
+      <li>сканы документов, удостоверяющих личность;</li>
+      <li>любую информацию, которая может быть использована против вас.</li>
+    </ul>
+    <p>Обработка переданных данных ограничена рассмотрением вашего обращения редакцией Сайта. Мы не публикуем и не перепродаём такие данные.</p>
+  </div>
+
+  <div class="panel" id="p8">
+    <h2><span class="num">8</span> Cookies и сторонние сервисы</h2>
+    <p>Сайт <b>не использует собственные cookie-файлы</b> для аналитики, рекламы и трекинга.</p>
+    <p>Отдельные сторонние сервисы, которые вы можете открыть по ссылкам с Сайта, могут использовать свои cookies. Это регулируется их собственными правилами:</p>
+    <ul>
+      <li>Telegram — <a href="https://telegram.org/privacy" target="_blank" rel="noopener">telegram.org/privacy</a>;</li>
+      <li>GitHub — <a href="https://docs.github.com/site-policy/privacy-policies" target="_blank" rel="noopener">docs.github.com/site-policy/privacy-policies</a>;</li>
+      <li>Форум и сервисы проекта Arizona RP — на их собственных страницах.</li>
+    </ul>
+    <p>Мы не контролируем cookies третьих лиц и рекомендуем ознакомиться с политикой каждого ресурса, который вы посещаете по ссылке с нашего Сайта.</p>
+  </div>
+
+  <div class="panel" id="p9">
+    <h2><span class="num">9</span> Права Пользователя</h2>
+    <p>Даже при минимальной обработке данных вы сохраняете полный контроль над информацией, которая касается вас лично:</p>
+    <ul>
+      <li><b>Право на доступ.</b> Вы можете запросить у редакции, какие сведения о вас были получены через формы или авторизацию.</li>
+      <li><b>Право на удаление.</b> Вы можете потребовать удалить ранее переданные сведения.</li>
+      <li><b>Право на отзыв согласия.</b> Вы можете в любой момент выйти из панели управления и очистить localStorage браузера.</li>
+      <li><b>Право на возражение.</b> Вы можете запретить дальнейшую обработку ваших обращений, если для этого нет законных оснований.</li>
+    </ul>
+    <p>Для реализации прав свяжитесь с редакцией через официальный Telegram-канал.</p>
+  </div>
+
+  <div class="panel" id="p10">
+    <h2><span class="num">10</span> Дети и несовершеннолетние</h2>
+    <p>Сайт носит информационный характер и не предназначен для целенаправленного сбора данных несовершеннолетних. Мы не создаём условия для сбора такой информации и не проверяем возраст Пользователей.</p>
+    <p>Если вам меньше 14 лет — пожалуйста, пользуйтесь Сайтом вместе с родителями или законными представителями и не отправляйте через формы персональные сведения о себе без их согласия.</p>
+  </div>
+
+  <div class="panel" id="p11">
+    <h2><span class="num">11</span> Безопасность</h2>
+    <p>Мы принимаем разумные меры для защиты Сайта:</p>
+    <ul class="check">
+      <li>используем HTTPS для доставки страниц;</li>
+      <li>не запрашиваем и не храним пароли;</li>
+      <li>минимизируем объём обрабатываемых данных;</li>
+      <li>авторизацию в панели управления ограничиваем списком допущенных лиц.</li>
+    </ul>
+    <p>Вместе с тем ни один сайт не может гарантировать абсолютную безопасность. Пожалуйста, соблюдайте базовые правила: не вводите свои пароли на сторонних ресурсах, проверяйте адрес Сайта и не передавайте конфиденциальную информацию по сомнительным каналам.</p>
+  </div>
+
+  <div class="panel" id="p12">
+    <h2><span class="num">12</span> Изменения Политики</h2>
+    <p>Мы можем обновлять настоящую Политику конфиденциальности. Актуальная редакция всегда опубликована по адресу этой страницы. Продолжая пользоваться Сайтом, вы соглашаетесь с новой редакцией.</p>
+    <div class="updated">
+      Последнее обновление: 3 октября 2026 года
+    </div>
+  </div>
+
+  <div class="panel" id="p13">
+    <h2><span class="num">13</span> Контакты</h2>
+    <p>Все вопросы, связанные с обработкой данных, направляйте в редакцию через официальный Telegram-канал:</p>
+    <p><a href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">t.me/arizona_faraway26</a></p>
+  </div>
+
+  <footer>
+    <div class="legal-links">
+      <a href="terms.html">📄 Пользовательское соглашение</a>
+      <a class="active" href="privacy.html">🔒 Политика конфиденциальности</a>
+      <a href="index.html">🏠 На главную</a>
+    </div>
+    <p>© 2026 · Arizona Faraway — 26 · фан-сайт сервера</p>
+  </footer>
+
+</div>
+
+<script src="maintenance.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>

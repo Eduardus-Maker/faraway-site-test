@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Админ-панель · Arizona Faraway — 26</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    font-family:'Inter','Segoe UI',system-ui,sans-serif;
+    background:var(--bg-0);color:var(--text);
+    line-height:1.6;min-height:100vh;
+    background-image:var(--bg-image);
+    transition:background .4s, color .4s;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:32px 22px 100px}
+
+  .head{
+    display:flex;align-items:center;gap:14px;
+    margin-bottom:28px;padding-bottom:20px;
+    border-bottom:1px solid var(--border);
+  }
+  .head .logo{
+    width:46px;height:46px;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    border-radius:13px;display:grid;place-items:center;
+    font-size:22px;box-shadow:0 0 22px var(--glow);
+  }
+  .head .t{font-size:20px;font-weight:800;letter-spacing:-.4px}
+  .head .s{font-size:12.5px;color:var(--dim)}
+  .head .status{
+    margin-left:auto;font-size:12px;font-weight:600;
+    padding:6px 14px;border-radius:999px;
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  .status.on{background:color-mix(in srgb, var(--green) 12%, transparent);color:var(--green);border:1px solid color-mix(in srgb, var(--green) 40%, transparent)}
+  .status.off{background:color-mix(in srgb, var(--red) 12%, transparent);color:var(--red);border:1px solid color-mix(in srgb, var(--red) 40%, transparent)}
+  .status .dot{width:6px;height:6px;border-radius:50%;background:currentColor;box-shadow:0 0 8px currentColor}
+
+  .panel{
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--bg-2) 60%, transparent));
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:24px;
+    margin-bottom:20px;
+  }
+  .panel h2{
+    font-size:16px;font-weight:700;
+    letter-spacing:-.2px;margin-bottom:16px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .panel h2 .ic{
+    width:30px;height:30px;border-radius:9px;
+    background:color-mix(in srgb, var(--accent) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+    display:grid;place-items:center;font-size:14px;
+  }
+  .panel .hint{
+    font-size:12.5px;color:var(--dim);
+    margin-bottom:14px;line-height:1.5;
+  }
+  .panel .hint code{
+    font-family:'JetBrains Mono',monospace;
+    background:rgba(255,255,255,.06);
+    padding:1px 6px;border-radius:4px;font-size:11.5px;
+    color:var(--accent-3);
+  }
+
+  .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px}
+  .form-grid .full{grid-column:1/-1}
+  .field{display:flex;flex-direction:column;gap:6px}
+  .field label{font-size:12px;font-weight:600;color:var(--text-2);letter-spacing:.2px}
+  .field input,.field select,.field textarea{
+    background:color-mix(in srgb, var(--bg-0) 60%, transparent);
+    border:1px solid var(--border);
+    color:var(--text);
+    padding:10px 13px;border-radius:10px;
+    font-size:13.5px;font-family:inherit;outline:none;
+    transition:.2s;width:100%;
+  }
+  .field input:focus,.field select:focus,.field textarea:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent);
+    background:color-mix(in srgb, var(--card-2) 60%, transparent);
+  }
+  .field textarea{resize:vertical;min-height:70px;font-family:inherit}
+  .field select{cursor:pointer}
+  .field select option{background:var(--card);color:var(--text)}
+
+  .diffs-box{
+    background:color-mix(in srgb, var(--bg-0) 35%, transparent);
+    border:1px dashed var(--border-2);
+    border-radius:12px;padding:14px;margin-bottom:14px;
+  }
+  .diffs-box .dh{
+    font-size:12.5px;font-weight:700;color:var(--text-2);margin-bottom:10px;
+    display:flex;align-items:center;justify-content:space-between;
+    gap:10px;flex-wrap:wrap;
+  }
+  .diff-item{display:grid;grid-template-columns:1fr 1fr 1fr 36px;gap:8px;margin-bottom:8px}
+  .diff-item input{
+    background:color-mix(in srgb, var(--card) 70%, transparent);
+    border:1px solid var(--border);color:var(--text);
+    padding:8px 11px;border-radius:8px;
+    font-size:12.5px;font-family:inherit;outline:none;transition:.2s;
+  }
+  .diff-item input:focus{border-color:var(--accent);background:color-mix(in srgb, var(--card-2) 70%, transparent)}
+  .diff-item .rm{
+    background:color-mix(in srgb, var(--red) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--red) 35%, transparent);
+    color:var(--red);border-radius:8px;cursor:pointer;font-size:14px;transition:.2s;
+  }
+  .diff-item .rm:hover{background:color-mix(in srgb, var(--red) 25%, transparent)}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:10px 18px;border-radius:11px;
+    font-size:13.5px;font-weight:700;
+    font-family:inherit;cursor:pointer;border:none;
+    transition:.25s;text-decoration:none;white-space:nowrap;
+  }
+  .btn-primary{background:linear-gradient(135deg,var(--accent),var(--violet));color:#fff;box-shadow:0 6px 22px var(--glow)}
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 10px 30px var(--glow)}
+  .btn-ghost{background:color-mix(in srgb, var(--card) 70%, transparent);border:1px solid var(--border-2);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--accent);background:color-mix(in srgb, var(--card-2) 90%, transparent)}
+  .btn-tg{background:linear-gradient(135deg,var(--tg),#1c7fb3);color:#fff}
+  .btn-tg:hover{transform:translateY(-2px);box-shadow:0 8px 26px color-mix(in srgb, var(--tg) 40%, transparent)}
+  .btn-green{background:linear-gradient(135deg,var(--green),#059669);color:#fff;box-shadow:0 6px 22px color-mix(in srgb, var(--green) 30%, transparent)}
+  .btn-green:hover{transform:translateY(-2px)}
+  .btn-red{background:color-mix(in srgb, var(--red) 12%, transparent);border:1px solid color-mix(in srgb, var(--red) 40%, transparent);color:var(--red)}
+  .btn-red:hover{background:color-mix(in srgb, var(--red) 22%, transparent)}
+  .btn-sm{padding:6px 12px;font-size:12px}
+  .btn-row{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+
+  .items-list{display:flex;flex-direction:column;gap:8px}
+  .item-row{
+    background:color-mix(in srgb, var(--bg-0) 40%, transparent);
+    border:1px solid var(--border);
+    border-left:3px solid var(--accent);
+    border-radius:10px;
+    padding:11px 14px;
+    display:flex;align-items:center;gap:12px;transition:.2s;
+  }
+  .item-row:hover{border-color:var(--border-2);background:color-mix(in srgb, var(--card-2) 50%, transparent)}
+  .item-row.t-nerf{border-left-color:var(--red)}
+  .item-row.t-buff{border-left-color:var(--green)}
+  .item-row.t-fix{border-left-color:var(--yellow)}
+  .item-row.t-add{border-left-color:var(--accent)}
+  .item-row.t-change{border-left-color:var(--violet)}
+  .item-row .iid{
+    font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--accent-2);
+    background:color-mix(in srgb, var(--accent) 10%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+    padding:2px 8px;border-radius:6px;font-weight:600;flex-shrink:0;
+  }
+  .item-row .ititle{flex:1;font-size:13.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+  .item-row .iacts{display:flex;gap:6px;flex-shrink:0}
+
+  .empty{text-align:center;padding:30px;color:var(--dim);font-size:13px}
+
+  .json-preview{
+    background:color-mix(in srgb, var(--bg-0) 70%, transparent);
+    border:1px solid var(--border);border-radius:12px;padding:14px;
+    font-family:'JetBrains Mono','Consolas',monospace;font-size:11.5px;
+    color:var(--text-2);max-height:280px;overflow:auto;
+    white-space:pre;line-height:1.55;
+  }
+
+  .toast{
+    position:fixed;bottom:28px;left:50%;
+    transform:translateX(-50%) translateY(100px);
+    background:color-mix(in srgb, var(--card) 98%, transparent);
+    border:1px solid var(--green);color:var(--green);
+    padding:12px 22px;border-radius:12px;
+    font-size:13.5px;font-weight:600;
+    box-shadow:0 20px 50px rgba(0,0,0,.6), 0 0 30px color-mix(in srgb, var(--green) 20%, transparent);
+    z-index:200;opacity:0;pointer-events:none;
+    transition:.4s cubic-bezier(.4,0,.2,1);
+    backdrop-filter:blur(14px);max-width:90vw;
+  }
+  .toast.show{transform:translateX(-50%) translateY(0);opacity:1}
+  .toast.err{border-color:var(--red);color:var(--red);box-shadow:0 20px 50px rgba(0,0,0,.6), 0 0 30px color-mix(in srgb, var(--red) 20%, transparent)}
+
+  .gate{
+    position:fixed;inset:0;z-index:100;
+    background:color-mix(in srgb, var(--bg-0) 96%, transparent);
+    backdrop-filter:blur(20px);
+    display:grid;place-items:center;padding:22px;
+    transition:.4s;overflow-y:auto;
+  }
+  .gate.hidden{opacity:0;pointer-events:none;visibility:hidden}
+  .gate-card{
+    max-width:480px;width:100%;
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--bg-2) 80%, transparent));
+    border:1px solid var(--border-2);border-radius:22px;
+    padding:34px 30px;text-align:center;
+    box-shadow:0 30px 80px rgba(0,0,0,.7);margin:auto;
+  }
+  .gate-card .g-icon{
+    width:70px;height:70px;margin:0 auto 20px;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    border-radius:20px;display:grid;place-items:center;
+    font-size:32px;box-shadow:0 0 40px var(--glow);
+  }
+  .gate-card h2{font-size:22px;font-weight:800;margin-bottom:8px;letter-spacing:-.5px}
+  .gate-card > p{color:var(--text-2);font-size:13.5px;margin-bottom:22px;line-height:1.55}
+
+  .tg-note{
+    background:color-mix(in srgb, var(--yellow) 8%, transparent);
+    border:1px solid color-mix(in srgb, var(--yellow) 30%, transparent);
+    border-radius:10px;padding:11px 14px;
+    font-size:12px;color:var(--yellow);
+    text-align:left;margin-bottom:18px;line-height:1.55;
+  }
+
+  .divider{
+    display:flex;align-items:center;gap:12px;
+    color:var(--dim);font-size:11px;
+    text-transform:uppercase;letter-spacing:1px;
+    margin:18px 0;
+  }
+  .divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+
+  .tg-widget{display:flex;justify-content:center;margin:6px 0 14px;min-height:50px}
+
+  .tg-user{
+    display:flex;align-items:center;gap:12px;
+    padding:12px 14px;border-radius:12px;
+    background:color-mix(in srgb, var(--tg) 8%, transparent);
+    border:1px solid color-mix(in srgb, var(--tg) 30%, transparent);
+    margin-bottom:14px;
+  }
+  .tg-user .av{
+    width:42px;height:42px;border-radius:50%;
+    background:linear-gradient(135deg,var(--tg),#1c7fb3);
+    color:#fff;display:grid;place-items:center;
+    font-weight:800;font-size:16px;flex-shrink:0;overflow:hidden;
+  }
+  .tg-user .av img{width:100%;height:100%;object-fit:cover}
+  .tg-user .info{flex:1;min-width:0;text-align:left}
+  .tg-user .info b{font-size:13.5px;display:block}
+  .tg-user .info span{font-size:11.5px;color:var(--dim)}
+
+  .code-input{
+    display:flex;gap:8px;justify-content:center;margin:16px 0;
+  }
+  .code-input input{
+    width:48px;height:56px;
+    background:color-mix(in srgb, var(--bg-0) 60%, transparent);
+    border:1px solid var(--border-2);
+    border-radius:12px;
+    text-align:center;font-size:22px;font-weight:800;
+    color:var(--text);font-family:'JetBrains Mono',monospace;outline:none;
+    transition:.2s;
+  }
+  .code-input input:focus{
+    border-color:var(--accent);
+    box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 20%, transparent);
+    transform:translateY(-2px);
+  }
+  .ip-warn{
+    background:color-mix(in srgb, var(--red) 8%, transparent);
+    border:1px solid color-mix(in srgb, var(--red) 35%, transparent);
+    color:var(--red);
+    border-radius:10px;padding:11px 14px;
+    font-size:12px;text-align:left;margin-bottom:14px;line-height:1.55;
+  }
+
+  @media (max-width:640px){
+    .form-grid{grid-template-columns:1fr}
+    .diff-item{grid-template-columns:1fr 1fr;gap:6px}
+    .diff-item .rm{grid-column:1/-1;padding:6px}
+    .head .status{display:none}
+  }
+</style>
+</head>
+<body>
+
+<!-- LOGIN GATE -->
+<div class="gate" id="gate">
+  <div class="gate-card">
+    <div class="g-icon">🔐</div>
+    <h2>Админ-панель</h2>
+    <p id="gateSub">Вход только для администраторов сервера. Авторизация через Telegram, проверка на сервере.</p>
+
+    <div id="tgWebAppBlock" style="display:none;margin-bottom:14px">
+      <div class="tg-user" id="tgWebAppUser">
+        <div class="av" id="tgWebAppAv">T</div>
+        <div class="info">
+          <b id="tgWebAppName">Telegram User</b>
+          <span id="tgWebAppUser2">@username</span>
+        </div>
+      </div>
+      <button class="btn btn-tg" style="width:100%;justify-content:center" id="loginTgWebApp">
+        Продолжить как <span id="tgWebAppBtnName">@user</span>
+      </button>
+      <div class="divider">или</div>
+    </div>
+
+    <div class="tg-note">
+      ⚠️ Вход в админку возможен только через Telegram. Пароль (если задан) используется как дополнительный фактор.
+      Бот пришлёт код подтверждения — введи его сюда.
+    </div>
+
+    <div id="tgLoginBlock">
+      <div class="tg-widget" id="tgWidgetHolder">
+        <div id="tgWidgetFallback" style="font-size:12px;color:var(--dim);text-align:center;line-height:1.5">
+          Виджет Telegram появится здесь, если указать имя бота.<br>
+          <button class="btn btn-ghost btn-sm" id="setupTgBot" style="margin-top:8px">⚙️ Настроить бота</button>
+        </div>
+      </div>
+      <div class="divider">или</div>
+    </div>
+
+    <div class="field" style="text-align:left;margin-bottom:12px">
+      <label>Админ-пароль (если задан)</label>
+      <input type="password" id="adminPass" placeholder="••••••••" autocomplete="off">
+    </div>
+
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-primary" id="loginManual">Войти по коду от бота</button>
+    </div>
+  </div>
+</div>
+
+<!-- CODE STEP -->
+<div class="gate hidden" id="codeGate">
+  <div class="gate-card">
+    <div class="g-icon">📨</div>
+    <h2>Введи код из бота</h2>
+    <p>Бот отправил тебе 6-значный код. Введи его ниже.</p>
+
+    <div class="ip-warn" id="ipWarn" style="display:none">
+      ⚠️ IP-адрес изменился. Требуется повторное подтверждение через бота.
+    </div>
+
+    <div class="code-input" id="codeInput">
+      <input type="text" maxlength="1" inputmode="numeric" autocomplete="one-time-code">
+      <input type="text" maxlength="1" inputmode="numeric">
+      <input type="text" maxlength="1" inputmode="numeric">
+      <input type="text" maxlength="1" inputmode="numeric">
+      <input type="text" maxlength="1" inputmode="numeric">
+      <input type="text" maxlength="1" inputmode="numeric">
+    </div>
+
+    <div class="btn-row" style="justify-content:center">
+      <button class="btn btn-primary" id="confirmCode">Подтвердить</button>
+      <button class="btn btn-ghost" id="resendCode">Отправить снова</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="wrap" id="mainWrap" style="display:none">
+
+  <div class="head">
+    <div class="logo">⚙️</div>
+    <div>
+      <div class="t">Админ-панель</div>
+      <div class="s">Arizona Faraway — 26 · управление сайтом</div>
+    </div>
+    <div class="status off" id="status"><span class="dot"></span><span id="statusText">Не авторизован</span></div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="ic">🛠️</span>Техническое обслуживание</h2>
+    <div class="hint">Включи тех.режим — обычные посетители увидят заглушку <code>maintenance.html</code>, а админы продолжат работу.</div>
+    <div class="btn-row">
+      <button class="btn btn-red" id="toggleMaint">🔴 Включить тех.режим</button>
+      <button class="btn btn-green" id="toggleMaintOff" style="display:none">🟢 Выключить тех.режим</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="ic">➕</span>Добавить / изменить обновление</h2>
+    <div class="hint">Заполни поля и нажми «Добавить в список». Потом — «Сохранить на сервере».</div>
+
+    <div class="form-grid">
+      <div class="field"><label>ID</label><input type="text" id="f_id" placeholder="10005"></div>
+      <div class="field"><label>Файл (опционально)</label><input type="text" id="f_file" placeholder="items/10005.md"></div>
+      <div class="field full"><label>Название</label><input type="text" id="f_title" placeholder="Сертификат 12CILINDRI"></div>
+      <div class="field"><label>Тип</label>
+        <select id="f_type">
+          <option value="nerf">Нерф</option>
+          <option value="buff">Бафф</option>
+          <option value="fix">Фикс</option>
+          <option value="add">Добавлено</option>
+          <option value="change">Изменено</option>
+        </select>
+      </div>
+      <div class="field"><label>Категория</label>
+        <select id="f_category">
+          <option value="bonus">Бонусы такси</option>
+          <option value="type">Типы предметов</option>
+          <option value="text">Исправления текста</option>
+          <option value="value">Стоимость и награды</option>
+          <option value="transfer">Межсерверная непереносимость</option>
+          <option value="accessory">Аксессуары</option>
+          <option value="other">Прочие файлы</option>
+        </select>
+      </div>
+      <div class="field full"><label>Описание</label><textarea id="f_desc" placeholder="Краткое описание…"></textarea></div>
+      <div class="field full"><label>Примечание (опционально)</label><textarea id="f_note" placeholder="Дополнительно…"></textarea></div>
+    </div>
+
+    <div class="diffs-box">
+      <div class="dh">
+        <span>Изменения «было → стало»</span>
+        <button class="btn btn-ghost btn-sm" id="addDiff">+ Добавить поле</button>
+      </div>
+      <div id="diffsList"></div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" id="saveItem">💾 Добавить в список</button>
+      <button class="btn btn-ghost" id="clearForm">Очистить форму</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="ic">📋</span>Текущий список (<span id="countItems">0</span>)</h2>
+    <div class="items-list" id="itemsList"></div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="ic">👥</span>Пользователи и посты сообщества</h2>
+    <div class="hint">Список последних постов. Удалить оскорбительный пост — кнопкой. (Требует бэкенд-эндпоинт <code>/api/admin/posts</code>.)</div>
+    <div class="items-list" id="modList"><div class="empty">Загрузка…</div></div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="ic">📤</span>Публикация</h2>
+    <div class="hint">Скачай JSON и положи в <code>data/updates.json</code>, либо закоммить в GitHub (если задан токен).</div>
+    <div class="btn-row">
+      <button class="btn btn-green" id="downloadJson">📥 Скачать updates.json</button>
+      <button class="btn btn-ghost" id="copyJson">📋 Скопировать JSON</button>
+      <button class="btn btn-red" id="logout">Выйти</button>
+    </div>
+  </div>
+
+  <div class="panel">
+    <h2><span class="ic">🔍</span>Предпросмотр JSON</h2>
+    <div class="json-preview" id="jsonPreview">[]</div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============================================================
+   КОНФИГ (прод: поменяй на свой worker)
+   ============================================================ */
+const API_BASE = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+  ? 'http://localhost:8787'
+  : ''; // '' = тот же origin (Cloudflare Worker route)
+
+const STORAGE_KEY  = 'azfw26_admin_token';
+const TG_BOT_KEY   = 'azfw26_tg_bot';
+const IP_HASH_KEY  = 'azfw26_ip_hash';
+
+let adminToken = localStorage.getItem(STORAGE_KEY) || '';
+let tempToken  = '';   // между «TG-верификация» и «ввод кода»
+let tgUser     = null;
+let items      = [];
+let maintOn    = false;
+
+const toastEl = document.getElementById('toast');
+let toastTimer;
+function toast(msg, isError){
+  toastEl.textContent = msg;
+  toastEl.classList.toggle('err', !!isError);
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 3000);
+}
+
+/* ============================================================
+   API helper
+   ============================================================ */
+async function api(path, opts){
+  opts = opts || {};
+  opts.headers = Object.assign({
+    'Content-Type': 'application/json'
+  }, opts.headers || {});
+  if(adminToken) opts.headers['Authorization'] = 'Bearer ' + adminToken;
+  const r = await fetch(API_BASE + path, opts);
+  const text = await r.text();
+  let data;
+  try { data = text ? JSON.parse(text) : {}; } catch(e){ data = { raw: text }; }
+  if(!r.ok){
+    const err = new Error(data.error || ('HTTP ' + r.status));
+    err.status = r.status;
+    err.data = data;
+    throw err;
+  }
+  return data;
+}
+
+/* ============================================================
+   GATE
+   ============================================================ */
+const gateEl = document.getElementById('gate');
+const codeGateEl = document.getElementById('codeGate');
+const mainWrap = document.getElementById('mainWrap');
+const statusEl = document.getElementById('status');
+const statusText = document.getElementById('statusText');
+
+function showGate(){ gateEl.classList.remove('hidden'); codeGateEl.classList.add('hidden'); mainWrap.style.display = 'none'; }
+function showCodeGate(){ gateEl.classList.add('hidden'); codeGateEl.classList.remove('hidden'); mainWrap.style.display = 'none'; }
+function showMain(){ gateEl.classList.add('hidden'); codeGateEl.classList.add('hidden'); mainWrap.style.display = 'block'; }
+function setAuth(on, label){
+  if(on){
+    statusEl.classList.remove('off'); statusEl.classList.add('on');
+    statusText.textContent = label || 'Авторизован';
+  } else {
+    statusEl.classList.remove('on'); statusEl.classList.add('off');
+    statusText.textContent = 'Не авторизован';
+  }
+}
+
+/* ============================================================
+   TG WEBAPP
+   ============================================================ */
+const tgWa = window.Telegram && window.Telegram.WebApp;
+if(tgWa && tgWa.initDataUnsafe && tgWa.initDataUnsafe.user){
+  const u = tgWa.initDataUnsafe.user;
+  tgUser = u;
+  document.getElementById('tgWebAppBlock').style.display = 'block';
+  document.getElementById('tgWebAppName').textContent =
+    (u.first_name || '') + (u.last_name ? ' ' + u.last_name : '') || 'Telegram User';
+  const uname = u.username ? '@' + u.username : ('id ' + u.id);
+  document.getElementById('tgWebAppUser2').textContent = uname;
+  document.getElementById('tgWebAppBtnName').textContent = uname;
+  const av = document.getElementById('tgWebAppAv');
+  if(u.photo_url) av.innerHTML = '<img src="' + u.photo_url + '" alt="">';
+  else av.textContent = (u.first_name || 'T').charAt(0).toUpperCase();
+
+  document.getElementById('loginTgWebApp').addEventListener('click', () => {
+    startTgAuth({ initData: tgWa.initData });
+  });
+}
+
+/* ============================================================
+   TG WIDGET
+   ============================================================ */
+const botUsername = localStorage.getItem(TG_BOT_KEY) || "";
+if(botUsername){
+  const holder = document.getElementById('tgWidgetHolder');
+  holder.innerHTML = '<div id="tgWidgetMount"></div>';
+  const s = document.createElement('script');
+  s.async = true;
+  s.src = 'https://telegram.org/js/telegram-widget.js?22';
+  s.setAttribute('data-telegram-login', botUsername);
+  s.setAttribute('data-size', 'large');
+  s.setAttribute('data-radius', '10');
+  s.setAttribute('data-userpic', 'true');
+  s.setAttribute('data-request-access', 'write');
+  s.setAttribute('data-onauth', 'onTelegramAuth(user)');
+  document.getElementById('tgWidgetMount').appendChild(s);
+} else {
+  const btn = document.getElementById('setupTgBot');
+  if(btn) btn.addEventListener('click', () => {
+    const name = prompt('Username бота (без @). Пример: my_admin_bot');
+    if(name && /^[A-Za-z0-9_]{4,32}$/.test(name)){
+      localStorage.setItem(TG_BOT_KEY, name);
+      toast('Бот сохранён: @' + name);
+      setTimeout(() => location.reload(), 700);
+    } else if(name !== null){
+      toast('Некорректное имя бота', true);
+    }
+  });
+}
+
+window.onTelegramAuth = function(user){
+  startTgAuth({ tgUser: user });
+};
+
+/* ============================================================
+   TG AUTH (первый шаг)
+   ============================================================ */
+async function startTgAuth(payload){
+  try {
+    const res = await fetch(API_BASE + '/api/auth/tg-verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        initData: payload.initData || null,
+        user: payload.tgUser || null,
+        password: document.getElementById('adminPass').value.trim() || null
+      })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || ('HTTP ' + res.status));
+
+    if(data.status === 'code_sent'){
+      tempToken = data.temp_token;
+      showCodeGate();
+      toast('Код отправлен в Telegram');
+      setTimeout(() => document.querySelector('#codeInput input').focus(), 100);
+    } else if(data.status === 'ok'){
+      adminToken = data.token;
+      localStorage.setItem(STORAGE_KEY, adminToken);
+      showMain();
+      setAuth(true, '@' + (data.username || 'admin'));
+      await loadAll();
+    } else {
+      throw new Error(data.error || 'Неизвестный ответ сервера');
+    }
+  } catch(e){
+    toast('Ошибка: ' + e.message, true);
+  }
+}
+
+/* Ручной вход — если админ уже получал код от бота, но потерял сессию */
+document.getElementById('loginManual').addEventListener('click', () => {
+  toast('Введи свой Telegram username в бота, чтобы получить код', true);
+  window.open('https://t.me/arizona_faraway26', '_blank', 'noopener');
+});
+
+/* ============================================================
+   CODE INPUT UX
+   ============================================================ */
+const codeInputs = [...document.querySelectorAll('#codeInput input')];
+codeInputs.forEach((inp, i) => {
+  inp.addEventListener('input', e => {
+    const v = e.target.value.replace(/\D/g, '');
+    e.target.value = v.slice(0, 1);
+    if(v && i < codeInputs.length - 1) codeInputs[i + 1].focus();
+  });
+  inp.addEventListener('keydown', e => {
+    if(e.key === 'Backspace' && !e.target.value && i > 0) codeInputs[i - 1].focus();
+  });
+  inp.addEventListener('paste', e => {
+    e.preventDefault();
+    const text = (e.clipboardData || window.clipboardData).getData('text').replace(/\D/g, '').slice(0, 6);
+    text.split('').forEach((ch, k) => { if(codeInputs[k]) codeInputs[k].value = ch; });
+    if(text.length) codeInputs[Math.min(text.length, 5)].focus();
+  });
+});
+
+document.getElementById('confirmCode').addEventListener('click', async () => {
+  const code = codeInputs.map(i => i.value).join('');
+  if(code.length !== 6){ toast('Введи 6 цифр', true); return; }
+  try {
+    const res = await fetch(API_BASE + '/api/auth/tg-confirm', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ temp_token: tempToken, code })
+    });
+    const data = await res.json();
+    if(!res.ok) throw new Error(data.error || 'Неверный код');
+
+    adminToken = data.token;
+    localStorage.setItem(STORAGE_KEY, adminToken);
+    showMain();
+    setAuth(true, '@' + (data.username || 'admin'));
+    await loadAll();
+    toast('Добро пожаловать!');
+  } catch(e){
+    toast('Ошибка: ' + e.message, true);
+  }
+});
+
+document.getElementById('resendCode').addEventListener('click', async () => {
+  try {
+    await startTgAuth({});
+  } catch(e){ toast(e.message, true); }
+});
+
+/* ============================================================
+   LOGOUT
+   ============================================================ */
+document.getElementById('logout').addEventListener('click', async () => {
+  try { await api('/api/auth/logout', { method: 'POST' }); } catch(e){}
+  adminToken = '';
+  localStorage.removeItem(STORAGE_KEY);
+  setAuth(false);
+  showGate();
+  toast('Вышел');
+});
+
+/* ============================================================
+   BOOT / SESSION CHECK
+   ============================================================ */
+(async function boot(){
+  if(!adminToken){ showGate(); return; }
+  try {
+    const me = await api('/api/admin/me');
+    setAuth(true, '@' + (me.username || 'admin'));
+    showMain();
+    await loadAll();
+  } catch(e){
+    if(e.status === 401){
+      adminToken = '';
+      localStorage.removeItem(STORAGE_KEY);
+      showGate();
+    } else {
+      toast('Ошибка сессии: ' + e.message, true);
+      showGate();
+    }
+  }
+})();
+
+/* ============================================================
+   LOAD / RENDER ADMIN
+   ============================================================ */
+async function loadAll(){
+  await loadItems();
+  await loadMaint();
+  await loadModeration();
+}
+
+async function loadItems(){
+  try {
+    const data = await api('/api/admin/updates');
+    items = data.items || [];
+    renderItems();
+    updatePreview();
+  } catch(e){
+    toast('Не загрузить обновления: ' + e.message, true);
+  }
+}
+
+async function loadMaint(){
+  try {
+    const data = await api('/api/admin/site');
+    maintOn = !!(data.maintenance && (data.maintenance === true || data.maintenance.enabled));
+    updateMaintButtons();
+  } catch(e){}
+}
+
+function updateMaintButtons(){
+  const on = document.getElementById('toggleMaint');
+  const off = document.getElementById('toggleMaintOff');
+  if(maintOn){ on.style.display = 'none'; off.style.display = 'inline-flex'; }
+  else { on.style.display = 'inline-flex'; off.style.display = 'none'; }
+}
+
+document.getElementById('toggleMaint').addEventListener('click', async () => {
+  try {
+    await api('/api/admin/site', { method: 'POST', body: JSON.stringify({ maintenance: { enabled: true, started_at: new Date().toISOString() } }) });
+    maintOn = true; updateMaintButtons();
+    toast('Тех.режим включён');
+  } catch(e){ toast(e.message, true); }
+});
+document.getElementById('toggleMaintOff').addEventListener('click', async () => {
+  try {
+    await api('/api/admin/site', { method: 'POST', body: JSON.stringify({ maintenance: { enabled: false } }) });
+    maintOn = false; updateMaintButtons();
+    toast('Тех.режим выключен');
+  } catch(e){ toast(e.message, true); }
+});
+
+async function loadModeration(){
+  const el = document.getElementById('modList');
+  try {
+    const data = await api('/api/admin/posts');
+    const posts = data.posts || [];
+    if(!posts.length){
+      el.innerHTML = '<div class="empty">Постов пока нет.</div>';
+      return;
+    }
+    el.innerHTML = posts.map(p => `
+      <div class="item-row">
+        <span class="iid">#${p.id}</span>
+        <span class="ititle">@${p.username}: ${escapeAttr((p.text || '').slice(0, 80))}</span>
+        <span class="iacts">
+          <button class="btn btn-red btn-sm" data-del-post="${p.id}">✕</button>
+        </span>
+      </div>
+    `).join('');
+    el.querySelectorAll('[data-del-post]').forEach(b => {
+      b.addEventListener('click', async () => {
+        if(!confirm('Удалить этот пост?')) return;
+        try {
+          await api('/api/admin/posts/' + b.dataset.delPost, { method: 'DELETE' });
+          loadModeration();
+          toast('Пост удалён');
+        } catch(e){ toast(e.message, true); }
+      });
+    });
+  } catch(e){
+    el.innerHTML = '<div class="empty">Модерация недоступна: ' + escapeAttr(e.message) + '</div>';
+  }
+}
+
+/* ============================================================
+   DIFFS EDITOR
+   ============================================================ */
+const diffsList = document.getElementById('diffsList');
+function makeDiffRow(field = "", oldV = "", newV = ""){
+  const row = document.createElement('div');
+  row.className = 'diff-item';
+  row.innerHTML = `
+    <input type="text" placeholder="Поле" value="${escapeAttr(field)}">
+    <input type="text" placeholder="Было" value="${escapeAttr(oldV)}">
+    <input type="text" placeholder="Стало" value="${escapeAttr(newV)}">
+    <button class="rm" title="Удалить">✕</button>
+  `;
+  row.querySelector('.rm').addEventListener('click', () => row.remove());
+  diffsList.appendChild(row);
+}
+function escapeAttr(s){
+  return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+document.getElementById('addDiff').addEventListener('click', () => makeDiffRow());
+makeDiffRow();
+
+function collectDiffs(){
+  return [...diffsList.querySelectorAll('.diff-item')].map(r => {
+    const [f, o, n] = r.querySelectorAll('input');
+    return { field: f.value.trim(), old: o.value.trim(), new: n.value.trim() };
+  }).filter(d => d.field || d.old || d.new);
+}
+
+/* ============================================================
+   FORM
+   ============================================================ */
+document.getElementById('saveItem').addEventListener('click', () => {
+  const id = document.getElementById('f_id').value.trim();
+  const title = document.getElementById('f_title').value.trim();
+  if(!id || !title){ toast('Заполни ID и название', true); return; }
+
+  const item = {
+    id, title,
+    file: document.getElementById('f_file').value.trim() || undefined,
+    type: document.getElementById('f_type').value,
+    category: document.getElementById('f_category').value,
+    desc: document.getElementById('f_desc').value.trim() || undefined,
+    diffs: collectDiffs(),
+    note: document.getElementById('f_note').value.trim() || undefined
+  };
+  Object.keys(item).forEach(k => item[k] === undefined && delete item[k]);
+  items.push(item);
+  renderItems(); updatePreview(); clearForm();
+  toast('Добавлено: ' + title);
+});
+
+document.getElementById('clearForm').addEventListener('click', clearForm);
+function clearForm(){
+  ['f_id','f_file','f_title','f_desc','f_note'].forEach(id => document.getElementById(id).value = '');
+  document.getElementById('f_type').value = 'nerf';
+  document.getElementById('f_category').value = 'bonus';
+  diffsList.innerHTML = '';
+  makeDiffRow();
+}
+
+/* ============================================================
+   ITEMS LIST
+   ============================================================ */
+const itemsListEl = document.getElementById('itemsList');
+const countItemsEl = document.getElementById('countItems');
+
+function renderItems(){
+  countItemsEl.textContent = items.length;
+  if(!items.length){
+    itemsListEl.innerHTML = '<div class="empty">Пока пусто.</div>';
+    return;
+  }
+  itemsListEl.innerHTML = items.map((it, i) => `
+    <div class="item-row t-${it.type}">
+      <span class="iid">${escapeAttr(it.id)}</span>
+      <span class="ititle">${escapeAttr(it.title)}</span>
+      <span class="iacts">
+        <button class="btn btn-ghost btn-sm" data-act="up" data-i="${i}">↑</button>
+        <button class="btn btn-ghost btn-sm" data-act="down" data-i="${i}">↓</button>
+        <button class="btn btn-ghost btn-sm" data-act="edit" data-i="${i}">✎</button>
+        <button class="btn btn-red btn-sm" data-act="del" data-i="${i}">✕</button>
+      </span>
+    </div>
+  `).join("");
+}
+
+itemsListEl.addEventListener('click', e => {
+  const btn = e.target.closest('button[data-act]');
+  if(!btn) return;
+  const i = +btn.dataset.i;
+  const act = btn.dataset.act;
+  if(act === 'del'){
+    if(confirm('Удалить «' + items[i].title + '»?')){
+      items.splice(i, 1); renderItems(); updatePreview(); toast('Удалено');
+    }
+  } else if(act === 'up' && i > 0){
+    [items[i-1], items[i]] = [items[i], items[i-1]];
+    renderItems(); updatePreview();
+  } else if(act === 'down' && i < items.length - 1){
+    [items[i+1], items[i]] = [items[i], items[i+1]];
+    renderItems(); updatePreview();
+  } else if(act === 'edit'){
+    loadToForm(items[i]);
+    window.scrollTo({top:0, behavior:'smooth'});
+  }
+});
+
+function loadToForm(item){
+  document.getElementById('f_id').value = item.id || '';
+  document.getElementById('f_file').value = item.file || '';
+  document.getElementById('f_title').value = item.title || '';
+  document.getElementById('f_type').value = item.type || 'nerf';
+  document.getElementById('f_category').value = item.category || 'bonus';
+  document.getElementById('f_desc').value = item.desc || '';
+  document.getElementById('f_note').value = item.note || '';
+  diffsList.innerHTML = '';
+  (item.diffs || []).forEach(d => makeDiffRow(d.field, d.old, d.new));
+  if(!item.diffs || !item.diffs.length) makeDiffRow();
+  const idx = items.indexOf(item);
+  if(idx > -1){ items.splice(idx, 1); renderItems(); updatePreview(); }
+  toast('Редактирование: ' + item.title);
+}
+
+/* ============================================================
+   PREVIEW
+   ============================================================ */
+const previewEl = document.getElementById('jsonPreview');
+function updatePreview(){
+  previewEl.textContent = JSON.stringify(items, null, 2);
+}
+
+/* ============================================================
+   DOWNLOAD / COPY
+   ============================================================ */
+document.getElementById('downloadJson').addEventListener('click', () => {
+  const payload = {
+    meta: { version: "1", updated: new Date().toISOString(), source: "https://t.me/arizona_faraway26" },
+    items
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], {type:'application/json'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url; a.download = 'updates.json'; a.click();
+  URL.revokeObjectURL(url);
+  toast('Скачано. Положи в data/updates.json');
+});
+
+document.getElementById('copyJson').addEventListener('click', async () => {
+  const payload = { meta: { version: "1", updated: new Date().toISOString() }, items };
+  try {
+    await navigator.clipboard.writeText(JSON.stringify(payload, null, 2));
+    toast('JSON скопирован');
+  } catch { toast('Не удалось скопировать', true); }
+});
+</script>
+
+<script src="theme.js"></script>
+</body>
+</html>

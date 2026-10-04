@@ -1,0 +1,1267 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Arizona Faraway — игровой сервер Arizona RP</title>
+<meta name="description" content="Arizona Faraway — один из серверов проекта Arizona RP. Новости, обновления, сообщество и всё о сервере.">
+<link rel="stylesheet" href="theme.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:90px}
+
+  body{
+    font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg-0);
+    color:var(--text);
+    line-height:1.65;
+    min-height:100vh;
+    overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+    transition:background .4s, color .4s;
+  }
+
+  #cursorGlow{
+    position:fixed;top:0;left:0;
+    width:600px;height:600px;
+    margin:-300px 0 0 -300px;
+    background:radial-gradient(circle,
+      color-mix(in srgb, var(--accent) 9%, transparent) 0%,
+      color-mix(in srgb, var(--violet) 5%, transparent) 35%,
+      transparent 65%);
+    pointer-events:none;
+    z-index:1;
+    will-change:transform;
+    mix-blend-mode:screen;
+  }
+  @media (max-width:720px){#cursorGlow{display:none}}
+
+  .bg-layer{position:fixed;inset:0;z-index:-1;overflow:hidden;background:var(--bg-image), var(--bg-0);}
+  .bg-layer::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+  }
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.32;animation:float 26s ease-in-out infinite}
+  .orb.o1{width:480px;height:480px;background:var(--accent);top:-140px;left:-120px}
+  .orb.o2{width:380px;height:380px;background:var(--tg);bottom:6%;right:-110px;animation-delay:-9s}
+  .orb.o3{width:320px;height:320px;background:var(--violet);top:48%;left:38%;animation-delay:-16s}
+  @keyframes float{
+    0%,100%{transform:translate(0,0) scale(1)}
+    33%{transform:translate(50px,-40px) scale(1.1)}
+    66%{transform:translate(-40px,40px) scale(.92)}
+  }
+
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px 100px;position:relative;z-index:2}
+
+  .announce{
+    background:linear-gradient(90deg,
+      color-mix(in srgb, var(--tg) 12%, transparent),
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      color-mix(in srgb, var(--violet) 12%, transparent));
+    border-bottom:1px solid color-mix(in srgb, var(--tg) 35%, transparent);
+    padding:9px 20px;font-size:13px;text-align:center;
+    position:relative;z-index:60;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  .announce-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .announce a{color:var(--tg);text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:2px 6px;border-radius:6px;transition:.2s}
+  .announce a:hover{background:color-mix(in srgb, var(--tg) 15%, transparent);filter:brightness(1.15)}
+  .announce .label{color:var(--text-2)}
+  .announce .dot-live{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green);animation:pulse-dot 1.8s ease-in-out infinite}
+  @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+  .nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    background:color-mix(in srgb, var(--bg-0) 82%, transparent);
+    border-bottom:1px solid var(--border);
+    margin:0 -22px;
+    padding:14px 22px;
+  }
+  .nav-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:22px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15px;text-decoration:none;color:var(--text)}
+  .brand .logo{
+    width:38px;height:38px;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    border-radius:11px;display:grid;place-items:center;font-size:19px;
+    box-shadow:0 0 22px var(--glow);
+    transition:.3s;
+  }
+  .brand:hover .logo{transform:rotate(-8deg) scale(1.06)}
+  .brand-text{display:flex;flex-direction:column;line-height:1.15}
+  .brand-text .t{font-size:14.5px;font-weight:800;letter-spacing:-.2px}
+  .brand-text .s{font-size:11px;color:var(--dim);font-weight:500}
+
+  .nav-links{display:flex;gap:6px;margin-left:auto;align-items:center;flex-wrap:wrap}
+  .nav-links a{
+    color:var(--text-2);text-decoration:none;font-size:13.5px;font-weight:600;
+    padding:8px 14px;border-radius:9px;transition:.2s;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .nav-links a:hover{color:var(--text);background:color-mix(in srgb, var(--accent) 12%, transparent)}
+  .nav-links a.active{color:var(--text);background:color-mix(in srgb, var(--accent) 18%, transparent);border:1px solid color-mix(in srgb, var(--accent) 35%, transparent)}
+
+  .nav-cta{
+    background:linear-gradient(135deg,var(--tg),#1c7fb3);
+    color:#fff !important;
+    padding:8px 16px !important;
+    border-radius:9px !important;
+    font-weight:700 !important;
+    display:inline-flex !important;align-items:center;gap:7px !important;
+    box-shadow:0 0 20px color-mix(in srgb, var(--tg) 30%, transparent);
+    transition:.3s !important;
+  }
+  .nav-cta:hover{
+    background:linear-gradient(135deg,#4cb8ef,var(--tg)) !important;
+    transform:translateY(-1px);
+    box-shadow:0 0 30px color-mix(in srgb, var(--tg) 50%, transparent);
+  }
+
+  .user-chip{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:6px 12px;border-radius:999px;
+    background:color-mix(in srgb, var(--tg) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--tg) 35%, transparent);
+    font-size:12.5px;font-weight:700;color:var(--tg);
+    cursor:pointer;transition:.2s;
+  }
+  .user-chip:hover{background:color-mix(in srgb, var(--tg) 20%, transparent)}
+  .user-chip .av{
+    width:20px;height:20px;border-radius:50%;
+    background:linear-gradient(135deg,var(--tg),#1c7fb3);
+    display:grid;place-items:center;color:#fff;font-size:10px;font-weight:800;
+    overflow:hidden;
+  }
+  .user-chip .av img{width:100%;height:100%;object-fit:cover}
+
+  .burger{
+    display:none;background:color-mix(in srgb, var(--card) 85%, transparent);
+    border:1px solid var(--border);color:var(--text);
+    width:40px;height:40px;border-radius:10px;
+    cursor:pointer;font-size:18px;transition:.2s;
+  }
+  .burger:hover{border-color:var(--accent)}
+
+  .hero{padding:70px 0 40px;text-align:center;position:relative}
+
+  .server-badge{
+    display:inline-flex;align-items:center;gap:10px;
+    background:color-mix(in srgb, var(--accent) 10%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    color:var(--accent-3);
+    font-size:12.5px;font-weight:700;letter-spacing:1.4px;
+    text-transform:uppercase;
+    padding:8px 20px;border-radius:999px;
+    margin-bottom:26px;
+    animation:pulse-border 3s ease-in-out infinite;
+  }
+  @keyframes pulse-border{
+    0%,100%{box-shadow:0 0 24px color-mix(in srgb, var(--accent) 15%, transparent)}
+    50%{box-shadow:0 0 36px color-mix(in srgb, var(--accent) 35%, transparent)}
+  }
+  .server-badge .dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green);animation:pulse-dot 1.8s ease-in-out infinite}
+
+  .hero-logo{
+    width:110px;height:110px;
+    margin:0 auto 26px;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    border-radius:30px;
+    display:grid;place-items:center;
+    font-size:58px;
+    box-shadow:0 20px 60px var(--glow), inset 0 1px 0 rgba(255,255,255,.15);
+    animation:bob 4s ease-in-out infinite;
+    position:relative;
+  }
+  .hero-logo::after{
+    content:'';
+    position:absolute;inset:-6px;
+    border-radius:36px;
+    background:conic-gradient(from 0deg, var(--accent), var(--violet), var(--tg), var(--accent));
+    opacity:.35;z-index:-1;filter:blur(24px);
+    animation:spin 8s linear infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  h1.hero-title{
+    font-size:clamp(42px,8vw,86px);
+    font-weight:900;
+    letter-spacing:-3px;
+    line-height:1;
+    background:linear-gradient(135deg,var(--text) 0%,var(--accent-2) 45%,var(--violet) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin-bottom:8px;
+  }
+
+  .hero-tagline{
+    font-size:clamp(16px,2.2vw,22px);
+    color:var(--accent-2);
+    font-weight:600;letter-spacing:.5px;
+    margin-bottom:20px;
+  }
+
+  .hero-desc{
+    color:var(--text-2);font-size:16px;
+    max-width:600px;margin:0 auto 38px;
+    line-height:1.7;
+  }
+  .hero-desc b{color:var(--text);font-weight:600}
+
+  .hero-cta{
+    display:flex;gap:14px;justify-content:center;flex-wrap:wrap;
+    margin-bottom:52px;
+  }
+
+  .btn{
+    display:inline-flex;align-items:center;gap:11px;
+    padding:16px 30px;
+    border-radius:15px;
+    font-size:16px;font-weight:700;
+    font-family:inherit;
+    text-decoration:none;cursor:pointer;border:none;
+    transition:transform .3s cubic-bezier(.4,0,.2,1), box-shadow .3s, background .3s, border-color .3s;
+    position:relative;overflow:hidden;
+    will-change:transform;
+  }
+
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    color:#fff;
+    box-shadow:0 12px 40px var(--glow);
+    padding:18px 36px;
+    font-size:17px;
+  }
+  .btn-primary:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 22px 60px var(--glow), 0 0 0 1px color-mix(in srgb, var(--accent-2) 60%, transparent);
+  }
+  .btn-primary:active{transform:translateY(-1px) scale(.99)}
+  .btn-primary::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg,transparent 30%, rgba(255,255,255,.25), transparent 70%);
+    transform:translateX(-100%);transition:.75s;
+  }
+  .btn-primary:hover::after{transform:translateX(100%)}
+
+  .btn-tg{
+    background:linear-gradient(135deg,var(--tg),#1c7fb3);
+    color:#fff;
+    box-shadow:0 12px 40px color-mix(in srgb, var(--tg) 40%, transparent);
+    padding:18px 30px;
+    font-size:16px;
+  }
+  .btn-tg:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 22px 60px color-mix(in srgb, var(--tg) 55%, transparent);
+    background:linear-gradient(135deg,#4cb8ef,var(--tg));
+  }
+  .btn-tg:active{transform:translateY(-1px) scale(.99)}
+
+  .btn-market{
+    background:linear-gradient(135deg,var(--green),#059669);
+    color:#fff;
+    box-shadow:0 12px 40px color-mix(in srgb, var(--green) 40%, transparent);
+    padding:18px 30px;
+    font-size:16px;
+  }
+  .btn-market:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 22px 60px color-mix(in srgb, var(--green) 55%, transparent);
+    background:linear-gradient(135deg,#6ee7b7,var(--green));
+  }
+  .btn-market:active{transform:translateY(-1px) scale(.99)}
+
+  .btn-forum{
+    background:linear-gradient(135deg,var(--gold),#b45309);
+    color:#fff;
+    box-shadow:0 12px 40px color-mix(in srgb, var(--gold) 40%, transparent);
+    padding:18px 30px;
+    font-size:16px;
+  }
+  .btn-forum:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 22px 60px color-mix(in srgb, var(--gold) 55%, transparent);
+    background:linear-gradient(135deg,#fcd34d,var(--gold-2));
+  }
+  .btn-forum:active{transform:translateY(-1px) scale(.99)}
+
+  /* Discord — индиго-фиолетовая */
+  .btn-discord{
+    background:linear-gradient(135deg,#5865F2,#7C3AED);
+    color:#fff;
+    box-shadow:0 12px 40px rgba(88,101,242,.45);
+    padding:18px 30px;
+    font-size:16px;
+  }
+  .btn-discord:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 22px 60px rgba(88,101,242,.65);
+    background:linear-gradient(135deg,#7C3AED,#5865F2);
+  }
+  .btn-discord:active{transform:translateY(-1px) scale(.99)}
+
+  /* Сообщество — розово-фиолетовая */
+  .btn-community{
+    background:linear-gradient(135deg,#ec4899,#8b5cf6);
+    color:#fff;
+    box-shadow:0 12px 40px rgba(236,72,153,.4);
+    padding:18px 30px;
+    font-size:16px;
+  }
+  .btn-community:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 22px 60px rgba(236,72,153,.6);
+    background:linear-gradient(135deg,#f472b6,#a78bfa);
+  }
+  .btn-community:active{transform:translateY(-1px) scale(.99)}
+
+  .btn-ghost{
+    background:color-mix(in srgb, var(--card) 70%, transparent);
+    border:1px solid var(--border-2);
+    color:var(--text);
+  }
+  .btn-ghost:hover{
+    border-color:var(--accent);
+    background:color-mix(in srgb, var(--card-2) 90%, transparent);
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 14px 40px rgba(0,0,0,.5), 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent);
+  }
+  .btn-ghost:active{transform:translateY(-1px) scale(.99)}
+
+  .quick-info{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+    gap:14px;max-width:900px;margin:0 auto;
+    padding-top:44px;border-top:1px solid var(--border);
+  }
+  .qi{
+    background:color-mix(in srgb, var(--card) 50%, transparent);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px 16px;text-align:center;
+    transition:.3s;
+  }
+  .qi:hover{
+    border-color:var(--border-2);
+    transform:translateY(-3px);
+    background:color-mix(in srgb, var(--card-2) 60%, transparent);
+  }
+  .qi .icon{font-size:22px;margin-bottom:8px;display:block}
+  .qi .t{font-size:13px;color:var(--text-2);font-weight:600;letter-spacing:.2px}
+  .qi .d{font-size:11.5px;color:var(--dim);margin-top:3px}
+
+  .sec-head{text-align:center;margin:80px auto 40px;max-width:640px}
+  .sec-head .kicker{
+    color:var(--accent-2);font-size:12px;font-weight:700;
+    text-transform:uppercase;letter-spacing:2px;margin-bottom:12px;
+  }
+  .sec-head h2{
+    font-size:clamp(26px,4vw,40px);font-weight:800;
+    letter-spacing:-1px;line-height:1.15;margin-bottom:12px;
+  }
+  .sec-head h2 span{
+    background:linear-gradient(135deg,var(--accent-2),var(--violet));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .sec-head p{color:var(--text-2);font-size:15px}
+
+  .big-cards{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:18px;
+  }
+
+  .big-card{
+    position:relative;
+    background:linear-gradient(160deg,var(--card) 0%,color-mix(in srgb, var(--bg-2) 70%, transparent) 100%);
+    border:1px solid var(--border);
+    border-radius:22px;
+    padding:30px 28px;
+    text-decoration:none;color:inherit;
+    overflow:hidden;
+    transition:transform .4s cubic-bezier(.4,0,.2,1), border-color .3s, box-shadow .3s;
+    display:flex;flex-direction:column;
+    min-height:280px;
+    will-change:transform;
+  }
+
+  .big-card::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,0%), color-mix(in srgb, var(--accent) 18%, transparent), transparent 60%);
+    opacity:0;transition:.4s;pointer-events:none;
+  }
+  .big-card:hover{
+    transform:translateY(-6px);
+    border-color:var(--border-2);
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent);
+  }
+  .big-card:hover::before{opacity:1}
+
+  .big-card.tg-card{
+    background:linear-gradient(160deg,color-mix(in srgb, var(--tg) 16%, transparent),color-mix(in srgb, var(--card) 85%, transparent));
+    border-color:color-mix(in srgb, var(--tg) 40%, transparent);
+  }
+  .big-card.tg-card:hover{
+    border-color:var(--tg);
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 0 0 1px color-mix(in srgb, var(--tg) 40%, transparent), 0 0 50px color-mix(in srgb, var(--tg) 20%, transparent);
+  }
+  .big-card.tg-card::before{
+    background:radial-gradient(circle at var(--mx,50%) var(--my,0%), color-mix(in srgb, var(--tg) 22%, transparent), transparent 60%);
+  }
+
+  .big-card.rak-card{
+    background:linear-gradient(160deg,color-mix(in srgb, var(--green) 12%, transparent),color-mix(in srgb, var(--card) 85%, transparent));
+    border-color:color-mix(in srgb, var(--green) 35%, transparent);
+  }
+  .big-card.rak-card:hover{
+    border-color:var(--green);
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 0 0 1px color-mix(in srgb, var(--green) 40%, transparent), 0 0 50px color-mix(in srgb, var(--green) 15%, transparent);
+  }
+  .big-card.rak-card::before{
+    background:radial-gradient(circle at var(--mx,50%) var(--my,0%), color-mix(in srgb, var(--green) 20%, transparent), transparent 60%);
+  }
+
+  .big-card.market-card{
+    background:linear-gradient(160deg,color-mix(in srgb, var(--green) 14%, transparent),color-mix(in srgb, var(--violet) 10%, transparent),color-mix(in srgb, var(--card) 85%, transparent));
+    border-color:color-mix(in srgb, var(--green) 40%, transparent);
+  }
+  .big-card.market-card:hover{
+    border-color:var(--green);
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 0 0 1px color-mix(in srgb, var(--green) 40%, transparent), 0 0 50px color-mix(in srgb, var(--green) 18%, transparent);
+  }
+  .big-card.market-card::before{
+    background:radial-gradient(circle at var(--mx,50%) var(--my,0%), color-mix(in srgb, var(--green) 22%, transparent), transparent 60%);
+  }
+
+  .big-card.forum-card{
+    background:linear-gradient(160deg,color-mix(in srgb, var(--gold) 12%, transparent),color-mix(in srgb, var(--card) 85%, transparent));
+    border-color:color-mix(in srgb, var(--gold) 35%, transparent);
+  }
+  .big-card.forum-card:hover{
+    border-color:var(--gold-2);
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 0 0 1px color-mix(in srgb, var(--gold) 40%, transparent), 0 0 50px color-mix(in srgb, var(--gold) 15%, transparent);
+  }
+  .big-card.forum-card::before{
+    background:radial-gradient(circle at var(--mx,50%) var(--my,0%), color-mix(in srgb, var(--gold) 20%, transparent), transparent 60%);
+  }
+
+  .big-card.discord-card{
+    background:linear-gradient(160deg,rgba(88,101,242,.16),color-mix(in srgb, var(--card) 85%, transparent));
+    border-color:rgba(88,101,242,.4);
+  }
+  .big-card.discord-card:hover{
+    border-color:#5865F2;
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(88,101,242,.5), 0 0 50px rgba(88,101,242,.25);
+  }
+  .big-card.discord-card::before{
+    background:radial-gradient(circle at var(--mx,50%) var(--my,0%), rgba(124,58,237,.22), transparent 60%);
+  }
+
+  .big-card.community-card{
+    background:linear-gradient(160deg,rgba(236,72,153,.14),rgba(139,92,246,.10),color-mix(in srgb, var(--card) 85%, transparent));
+    border-color:rgba(236,72,153,.35);
+  }
+  .big-card.community-card:hover{
+    border-color:#ec4899;
+    box-shadow:0 24px 70px rgba(0,0,0,.55), 0 0 0 1px rgba(236,72,153,.4), 0 0 50px rgba(236,72,153,.2);
+  }
+  .big-card.community-card::before{
+    background:radial-gradient(circle at var(--mx,50%) var(--my,0%), rgba(236,72,153,.22), transparent 60%);
+  }
+
+  .big-icon{
+    width:64px;height:64px;
+    border-radius:18px;
+    display:grid;place-items:center;
+    margin-bottom:20px;
+    position:relative;z-index:1;
+    transition:.4s;
+    box-shadow:inset 0 1px 0 rgba(255,255,255,.1);
+  }
+  .big-card.tg-card .big-icon{background:linear-gradient(135deg,var(--tg),#1c7fb3);color:#fff;box-shadow:0 12px 36px color-mix(in srgb, var(--tg) 50%, transparent);}
+  .big-card.rak-card .big-icon{background:linear-gradient(135deg,var(--green),#059669);color:#fff;box-shadow:0 12px 36px color-mix(in srgb, var(--green) 40%, transparent);}
+  .big-card.market-card .big-icon{background:linear-gradient(135deg,var(--green),var(--violet));color:#fff;box-shadow:0 12px 36px color-mix(in srgb, var(--green) 40%, transparent);}
+  .big-card.forum-card .big-icon{background:linear-gradient(135deg,var(--gold),#b45309);color:#fff;box-shadow:0 12px 36px color-mix(in srgb, var(--gold) 40%, transparent);}
+  .big-card.discord-card .big-icon{background:linear-gradient(135deg,#5865F2,#7C3AED);color:#fff;box-shadow:0 12px 36px rgba(88,101,242,.5);}
+  .big-card.community-card .big-icon{background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;box-shadow:0 12px 36px rgba(236,72,153,.5);}
+  .big-card:hover .big-icon{transform:scale(1.08) rotate(-6deg)}
+
+  .big-card h3{
+    font-size:21px;font-weight:800;
+    letter-spacing:-.4px;margin-bottom:10px;
+    position:relative;z-index:1;
+  }
+
+  .big-card p{
+    color:var(--text-2);font-size:14px;
+    line-height:1.6;flex:1;
+    position:relative;z-index:1;
+    margin-bottom:16px;
+  }
+
+  .big-card .big-link{
+    display:inline-flex;align-items:center;gap:8px;
+    font-size:13.5px;font-weight:700;
+    position:relative;z-index:1;
+    padding-top:14px;
+    border-top:1px solid rgba(255,255,255,.08);
+    transition:.3s;
+  }
+  .big-card.tg-card .big-link{color:var(--tg)}
+  .big-card.rak-card .big-link{color:var(--green)}
+  .big-card.market-card .big-link{color:var(--green)}
+  .big-card.forum-card .big-link{color:var(--gold-2)}
+  .big-card.discord-card .big-link{color:#7C9BFF}
+  .big-card.community-card .big-link{color:#ec4899}
+  .big-card .big-link .arr{transition:.3s;margin-left:auto}
+  .big-card:hover .big-link .arr{transform:translate(3px,-3px)}
+
+  .updates-banner{
+    margin:26px 0 0;
+    background:
+      radial-gradient(circle at 15% 30%, color-mix(in srgb, var(--accent) 20%, transparent), transparent 55%),
+      radial-gradient(circle at 85% 70%, color-mix(in srgb, var(--violet) 18%, transparent), transparent 55%),
+      linear-gradient(160deg,color-mix(in srgb, var(--card) 90%, transparent),color-mix(in srgb, var(--bg-2) 70%, transparent));
+    border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    border-radius:22px;
+    padding:34px 32px;
+    display:flex;align-items:center;gap:26px;
+    position:relative;overflow:hidden;
+    text-decoration:none;color:inherit;
+    transition:transform .35s cubic-bezier(.4,0,.2,1), border-color .3s, box-shadow .3s;
+    will-change:transform;
+  }
+  .updates-banner::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:32px 32px;
+    mask-image:radial-gradient(ellipse 70% 70% at 30% 50%, #000 30%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 70% 70% at 30% 50%, #000 30%, transparent 80%);
+    pointer-events:none;
+  }
+  .updates-banner::after{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,50%), color-mix(in srgb, var(--accent-2) 18%, transparent), transparent 55%);
+    opacity:0;transition:.4s;pointer-events:none;
+  }
+  .updates-banner:hover{
+    transform:translateY(-4px);
+    border-color:var(--accent);
+    box-shadow:0 20px 60px rgba(0,0,0,.5), 0 0 0 1px color-mix(in srgb, var(--accent) 40%, transparent), 0 0 60px color-mix(in srgb, var(--accent) 15%, transparent);
+  }
+  .updates-banner:hover::after{opacity:1}
+
+  .ub-icon{
+    width:80px;height:80px;flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    border-radius:22px;
+    display:grid;place-items:center;
+    font-size:38px;
+    box-shadow:0 12px 40px var(--glow);
+    position:relative;z-index:1;
+    transition:.4s;
+  }
+  .updates-banner:hover .ub-icon{transform:rotate(-8deg) scale(1.06)}
+
+  .ub-content{flex:1;position:relative;z-index:1}
+  .ub-content .ub-badge{
+    display:inline-block;
+    background:color-mix(in srgb, var(--green) 15%, transparent);
+    border:1px solid color-mix(in srgb, var(--green) 40%, transparent);
+    color:var(--green);
+    font-size:10.5px;font-weight:700;
+    text-transform:uppercase;letter-spacing:.8px;
+    padding:3px 10px;border-radius:999px;
+    margin-bottom:10px;
+    animation:pulse-dot 2s ease-in-out infinite;
+  }
+  .ub-content h3{
+    font-size:24px;font-weight:800;
+    letter-spacing:-.5px;margin-bottom:6px;
+  }
+  .ub-content p{
+    color:var(--text-2);font-size:14px;line-height:1.55;
+  }
+  .ub-content p b{color:var(--accent-2);font-weight:600}
+
+  .ub-btn{
+    flex-shrink:0;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    color:#fff;
+    padding:16px 26px;border-radius:14px;
+    font-weight:700;font-size:15px;
+    display:inline-flex;align-items:center;gap:9px;
+    box-shadow:0 10px 34px var(--glow);
+    position:relative;z-index:1;
+    transition:transform .3s, box-shadow .3s;
+    white-space:nowrap;
+  }
+  .updates-banner:hover .ub-btn{
+    transform:translateX(4px);
+    box-shadow:0 14px 44px var(--glow);
+  }
+
+  .features-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+    gap:16px;
+  }
+
+  .feat{
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--bg-2) 50%, transparent));
+    border:1px solid var(--border);
+    border-radius:18px;
+    padding:24px 22px;
+    transition:.3s;
+    position:relative;overflow:hidden;
+  }
+  .feat::before{
+    content:'';position:absolute;
+    top:0;left:0;right:0;height:2px;
+    background:linear-gradient(90deg,transparent,var(--accent),transparent);
+    opacity:0;transition:.3s;
+  }
+  .feat:hover{
+    border-color:var(--border-2);
+    transform:translateY(-4px);
+    box-shadow:0 16px 44px rgba(0,0,0,.5);
+  }
+  .feat:hover::before{opacity:1}
+  .feat .fic{
+    width:48px;height:48px;border-radius:13px;
+    display:grid;place-items:center;font-size:22px;
+    background:linear-gradient(135deg,color-mix(in srgb, var(--accent) 15%, transparent),color-mix(in srgb, var(--violet) 8%, transparent));
+    border:1px solid var(--border-2);
+    margin-bottom:14px;
+  }
+  .feat h4{font-size:15.5px;font-weight:700;margin-bottom:7px;letter-spacing:-.2px}
+  .feat p{font-size:13px;color:var(--text-2);line-height:1.6}
+
+  .login-card{
+    margin-top:26px;
+    background:linear-gradient(160deg,var(--card) 0%,color-mix(in srgb, var(--bg-2) 70%, transparent) 100%);
+    border:1px solid color-mix(in srgb, var(--tg) 35%, transparent);
+    border-radius:22px;
+    padding:32px 34px;
+    display:grid;
+    grid-template-columns:1fr auto;
+    gap:26px;
+    align-items:center;
+    position:relative;
+    overflow:hidden;
+  }
+  .login-card::before{
+    content:'';
+    position:absolute;
+    top:-50%;left:-20%;
+    width:400px;height:400px;
+    background:radial-gradient(circle, color-mix(in srgb, var(--tg) 15%, transparent), transparent 65%);
+    pointer-events:none;
+  }
+  .login-card .lc-info{position:relative;z-index:1}
+  .login-card h3{
+    font-size:22px;font-weight:800;letter-spacing:-.4px;
+    margin-bottom:8px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .login-card h3 .ico{
+    width:38px;height:38px;border-radius:11px;
+    background:linear-gradient(135deg,var(--tg),#1c7fb3);
+    display:grid;place-items:center;font-size:18px;
+    box-shadow:0 0 22px color-mix(in srgb, var(--tg) 40%, transparent);
+  }
+  .login-card p{color:var(--text-2);font-size:14px;line-height:1.6;max-width:560px}
+  .login-card .lc-actions{position:relative;z-index:1;display:flex;flex-direction:column;gap:10px;min-width:220px}
+  .login-card .lc-actions .btn{justify-content:center;width:100%}
+
+  @media (max-width:760px){
+    .login-card{grid-template-columns:1fr;padding:24px 22px}
+    .login-card .lc-actions{width:100%}
+  }
+
+  footer{
+    margin-top:80px;padding-top:40px;
+    border-top:1px solid var(--border);
+  }
+  .foot-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr;
+    gap:40px;margin-bottom:36px;
+  }
+  .foot-brand .brand{margin-bottom:14px}
+  .foot-brand p{
+    color:var(--dim);font-size:13px;
+    max-width:360px;line-height:1.6;
+  }
+  .foot-col h5{
+    font-size:12px;font-weight:700;
+    text-transform:uppercase;letter-spacing:1px;
+    color:var(--text-2);margin-bottom:14px;
+  }
+  .foot-col ul{list-style:none}
+  .foot-col ul li{margin-bottom:9px}
+  .foot-col ul a{
+    color:var(--dim);font-size:13.5px;
+    text-decoration:none;transition:.2s;
+    display:inline-flex;align-items:center;gap:7px;
+  }
+  .foot-col ul a:hover{color:var(--accent-2)}
+
+  .foot-legal{
+    display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+    margin:0 0 26px;
+    padding:22px 0 0;
+    border-top:1px dashed var(--border);
+  }
+  .foot-legal a{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:11px 20px;border-radius:12px;
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--bg-2) 60%, transparent));
+    border:1px solid var(--border);
+    color:var(--text-2);text-decoration:none;
+    font-size:13px;font-weight:600;
+    transition:.28s cubic-bezier(.4,0,.2,1);
+    position:relative;overflow:hidden;
+  }
+  .foot-legal a::before{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(135deg, transparent 40%, color-mix(in srgb, var(--accent) 15%, transparent), transparent 60%);
+    transform:translateX(-100%);transition:.6s;
+  }
+  .foot-legal a:hover{
+    border-color:var(--accent);
+    color:var(--accent-2);
+    transform:translateY(-2px);
+    box-shadow:0 10px 28px rgba(0,0,0,.4), 0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+  .foot-legal a:hover::before{transform:translateX(100%)}
+  .foot-legal a.privacy-ico{border-color:color-mix(in srgb, var(--green) 35%, var(--border))}
+  .foot-legal a.privacy-ico:hover{border-color:var(--green);color:var(--green)}
+  .foot-legal a.docs-ico{border-color:color-mix(in srgb, var(--violet) 35%, var(--border))}
+  .foot-legal a.docs-ico:hover{border-color:var(--violet);color:var(--violet)}
+
+  .foot-bottom{
+    padding-top:26px;
+    border-top:1px solid var(--border);
+    display:flex;justify-content:space-between;
+    align-items:center;gap:16px;flex-wrap:wrap;
+    color:var(--dim);font-size:12.5px;
+  }
+  .foot-bottom .heart{color:var(--accent-2);animation:beat 1.6s ease-in-out infinite;display:inline-block}
+  .foot-bottom a{color:var(--accent-2);text-decoration:none;font-weight:600}
+  .foot-bottom a:hover{text-decoration:underline}
+  @keyframes beat{0%,100%{transform:scale(1)}50%{transform:scale(1.3)}}
+
+  #toTop{
+    position:fixed;bottom:26px;right:26px;
+    width:48px;height:48px;border-radius:14px;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    color:#fff;border:none;font-size:19px;cursor:pointer;
+    opacity:0;pointer-events:none;
+    transition:.3s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 8px 30px var(--glow);z-index:40;
+  }
+  #toTop.show{opacity:1;pointer-events:auto}
+  #toTop:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 12px 40px var(--glow)}
+
+  @media (max-width:640px){#toTop{bottom:80px;right:20px}}
+
+  @media (max-width:900px){
+    .foot-grid{grid-template-columns:1fr;gap:32px}
+    .updates-banner{flex-direction:column;text-align:center;padding:30px 24px;gap:20px}
+    .ub-icon{margin:0 auto}
+    .ub-btn{width:100%;justify-content:center}
+  }
+  @media (max-width:720px){
+    .nav-links{
+      display:none;
+      position:absolute;top:calc(100% + 8px);right:22px;left:22px;
+      flex-direction:column;
+      background:color-mix(in srgb, var(--bg-0) 98%, transparent);
+      border:1px solid var(--border-2);
+      border-radius:14px;padding:10px;
+      box-shadow:0 20px 60px rgba(0,0,0,.6);
+      backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+    }
+    .nav-links.open{display:flex}
+    .nav-links a{width:100%;justify-content:flex-start}
+    .burger{display:grid;place-items:center;margin-left:auto}
+    .hero{padding:50px 0 30px}
+    .hero-logo{width:90px;height:90px;font-size:46px;border-radius:24px}
+    .hero-cta .btn{width:100%;justify-content:center}
+    .hero-cta{flex-direction:column;align-items:stretch}
+    .foot-bottom{justify-content:center;text-align:center}
+    .nav{padding:12px 22px}
+  }
+</style>
+</head>
+<body>
+
+<div id="cursorGlow"></div>
+
+<div class="bg-layer">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+
+<div class="announce">
+  <div class="announce-inner">
+    <span class="dot-live"></span>
+    <span class="label">Новости сервера каждый день —</span>
+    <a href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">
+      Arizona Faraway — 26
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+    </a>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="#top">
+      <span class="logo">⚡</span>
+      <span class="brand-text">
+        <span class="t">Arizona Faraway — 26</span>
+        <span class="s">игровой сервер · новости · обновления</span>
+      </span>
+    </a>
+    <button class="burger" id="burger" aria-label="Меню">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="#about">О сервере</a>
+      <a href="#features">Особенности</a>
+      <a href="updates.html">📋 Обновления</a>
+      <a href="community.html">💬 Сообщество</a>
+      <a href="https://t.me/farawayrp26" target="_blank" rel="noopener">🛒 Барахолка</a>
+      <span id="userSlot"></span>
+      <a class="nav-cta" href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+        Telegram
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap" id="top">
+
+  <header class="hero">
+    <div class="server-badge"><span class="dot"></span>Сервер проекта Arizona RP</div>
+
+    <div class="hero-logo">⚡</div>
+
+    <h1 class="hero-title">Arizona Faraway</h1>
+    <div class="hero-tagline">26-й игровой сервер Аризоны</div>
+
+    <p class="hero-desc">
+      Добро пожаловать на <b>Arizona Faraway</b> — один из самых атмосферных серверов проекта.
+      Здесь ты найдёшь всё, что нужно для комфортной игры: стабильный онлайн, живое сообщество,
+      свежие ивенты и постоянные обновления.
+    </p>
+
+    <!-- Цветные кнопки: обновления / новости / барахолка / форум / discord -->
+    <div class="hero-cta">
+      <a href="updates.html" class="btn btn-primary">📋 Перейти к обновлениям</a>
+      <a href="https://t.me/arizona_faraway26" class="btn btn-tg" target="_blank" rel="noopener">📢 Новости сервера</a>
+      <a href="https://t.me/farawayrp26" class="btn btn-market" target="_blank" rel="noopener">🛒 Барахолка 26-го</a>
+      <a href="https://forum.arizona-rp.com/forums/2905/" class="btn btn-forum" target="_blank" rel="noopener">💬 Форум 26-го</a>
+      <a href="https://discord.gg/arzfaraway" class="btn btn-discord" target="_blank" rel="noopener">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.095 2.157 2.418 0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.095 2.157 2.418 0 1.334-.946 2.419-2.157 2.419z"/></svg>
+        Discord 26-го
+      </a>
+      <a href="community.html" class="btn btn-community">💬 Сообщество</a>
+    </div>
+
+    <div class="quick-info">
+      <div class="qi">
+        <span class="icon">🎮</span>
+        <div class="t">Игровой сервер</div>
+        <div class="d">Arizona RP · Faraway #26</div>
+      </div>
+      <div class="qi">
+        <span class="icon">📢</span>
+        <div class="t">Живые новости</div>
+        <div class="d">Ежедневно в Telegram</div>
+      </div>
+      <div class="qi">
+        <span class="icon">🛒</span>
+        <div class="t">Барахолка</div>
+        <div class="d">Купля-продажа игрового</div>
+      </div>
+      <div class="qi">
+        <span class="icon">💬</span>
+        <div class="t">Сообщество</div>
+        <div class="d">Посты, обсуждения, мемы</div>
+      </div>
+    </div>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <div class="kicker">Полезное</div>
+      <h2>Что тебе нужно <span>знать</span></h2>
+      <p>Основные источники — новости, барахолка, форум, Discord и сообщество сайта.</p>
+    </div>
+
+    <div class="big-cards">
+
+      <a class="big-card tg-card" href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">
+        <div class="big-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+        </div>
+        <h3>Telegram-канал</h3>
+        <p>Главный источник новостей Arizona Faraway: анонсы ивентов, розыгрыши, изменения в игре.</p>
+        <span class="big-link">@arizona_faraway26 <span class="arr">↗</span></span>
+      </a>
+
+      <a class="big-card market-card" href="https://t.me/farawayrp26" target="_blank" rel="noopener">
+        <div class="big-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="9" cy="21" r="1.4"/><circle cx="19" cy="21" r="1.4"/>
+            <path d="M2.5 3h2.5l2.4 12.2a2 2 0 0 0 2 1.6h9.2a2 2 0 0 0 2-1.6L22 7H6"/>
+          </svg>
+        </div>
+        <h3>Барахолка 26-го</h3>
+        <p>Торговая площадка сервера: покупка и продажа игрового имущества, транспорта, аккаунтов.</p>
+        <span class="big-link">@farawayrp26 <span class="arr">↗</span></span>
+      </a>
+
+      <a class="big-card rak-card" href="https://ffhelper.by/login" target="_blank" rel="noopener">
+        <div class="big-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <h3>RakBot — защита от RakBot</h3>
+        <p>Официальный сайт проекта по борьбе с ракботом. Снять ракбот, проверить статус аккаунта.</p>
+        <span class="big-link">Перейти на сайт <span class="arr">↗</span></span>
+      </a>
+
+      <a class="big-card forum-card" href="https://forum.arizona-rp.com/forums/2905/" target="_blank" rel="noopener">
+        <div class="big-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M8 9h8M8 13h5"/>
+          </svg>
+        </div>
+        <h3>Форум 26-го сервера</h3>
+        <p>Официальный форум Arizona Faraway. Обсуждения, жалобы, предложения, заявки во фракции.</p>
+        <span class="big-link">forum.arizona-rp.com <span class="arr">↗</span></span>
+      </a>
+
+      <a class="big-card discord-card" href="https://discord.gg/arzfaraway" target="_blank" rel="noopener">
+        <div class="big-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.865-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.74 19.74 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994a.076.076 0 0 0-.041-.106 13.1 13.1 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.198.373.292a.077.077 0 0 1-.006.127 12.3 12.3 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.84 19.84 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.331c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.095 2.157 2.418 0 1.334-.956 2.419-2.157 2.419zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.418 2.157-2.418 1.21 0 2.176 1.095 2.157 2.418 0 1.334-.946 2.419-2.157 2.419z"/></svg>
+        </div>
+        <h3>Discord 26-го</h3>
+        <p>Голосовые каналы, чаты, лобби для каток, мемы и движ. Присоединяйся к своему серверу.</p>
+        <span class="big-link">discord.gg/arzfaraway <span class="arr">↗</span></span>
+      </a>
+
+      <a class="big-card community-card" href="community.html">
+        <div class="big-icon">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+            <path d="M8 9h8M8 13h5"/>
+          </svg>
+        </div>
+        <h3>Сообщество сайта</h3>
+        <p>Посты от игроков: гайды, скриншоты, мемы, объявления. Регистрация через Telegram — за пару секунд.</p>
+        <span class="big-link">Открыть сообщество <span class="arr">↗</span></span>
+      </a>
+
+    </div>
+
+    <a class="updates-banner" href="updates.html" id="updatesBanner">
+      <div class="ub-icon">📋</div>
+      <div class="ub-content">
+        <span class="ub-badge">live</span>
+        <h3>Обновления сервера</h3>
+        <p>Полный разбор последнего патча: <b>279 файлов</b>, <b>281 изменение</b>. Всё это — список изменений в файлах игры.</p>
+      </div>
+      <div class="ub-btn">Смотреть список →</div>
+    </a>
+
+    <div class="login-card" id="loginCard">
+      <div class="lc-info">
+        <h3>
+          <span class="ico">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+          </span>
+          Вход через Telegram
+        </h3>
+        <p id="loginCardText">
+          Быстрый вход через Telegram. Если открываешь сайт внутри Telegram — вход произойдёт автоматически.
+          Это нужно, чтобы писать посты в сообществе и (для админов) управлять сайтом.
+        </p>
+      </div>
+      <div class="lc-actions">
+        <button class="btn btn-tg" id="loginBtn">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+          <span id="loginBtnLabel">Войти через Telegram</span>
+        </button>
+        <a class="btn btn-ghost" href="community.html">
+          💬 Открыть сообщество
+        </a>
+      </div>
+    </div>
+
+  </section>
+
+  <section id="about">
+    <div class="sec-head">
+      <div class="kicker">О сервере</div>
+      <h2>Почему <span>Arizona Faraway</span></h2>
+      <p>Сервер для тех, кто ценит атмосферу, стабильность и живое сообщество.</p>
+    </div>
+
+    <div class="features-grid" id="features">
+      <div class="feat"><div class="fic">🏙️</div><h4>Атмосфера штата</h4><p>Классическая Arizona RP с продуманной экономикой, работой, бизнесом и криминалом.</p></div>
+      <div class="feat"><div class="fic">👥</div><h4>Живое сообщество</h4><p>Активные фракции, семьи, мафии и просто хорошие люди — всегда есть с кем поиграть.</p></div>
+      <div class="feat"><div class="fic">🛡️</div><h4>Честная игра</h4><p>Постоянная работа с читерами и нарушителями — играть комфортно и безопасно.</p></div>
+      <div class="feat"><div class="fic">🎉</div><h4>Ивенты и движ</h4><p>Регулярные мероприятия, конкурсы и активности — скучать не приходится.</p></div>
+      <div class="feat"><div class="fic">⚙️</div><h4>Стабильность</h4><p>Сервер работает без лагов и крашей, а обновления приходят вовремя.</p></div>
+      <div class="feat"><div class="fic">🆕</div><h4>Постоянное развитие</h4><p>Новые механики, транспорт, аксессуары и события — контент не застаивается.</p></div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="foot-grid">
+      <div class="foot-brand">
+        <a class="brand" href="#top">
+          <span class="logo">⚡</span>
+          <span class="brand-text">
+            <span class="t">Arizona Faraway — 26</span>
+            <span class="s">игровой сервер Arizona RP</span>
+          </span>
+        </a>
+        <p>Фан-сайт игрового сервера Arizona Faraway. Сайт не собирает персональные данные, кроме случаев добровольной авторизации, и не использует трекеры.</p>
+      </div>
+
+      <div class="foot-col">
+        <h5>Разделы</h5>
+        <ul>
+          <li><a href="#about">🏙️ О сервере</a></li>
+          <li><a href="#features">⚙️ Особенности</a></li>
+          <li><a href="updates.html">📋 Обновления</a></li>
+          <li><a href="community.html">💬 Сообщество</a></li>
+          <li><a href="info.html">ℹ️ Инфо сервера</a></li>
+        </ul>
+      </div>
+
+      <div class="foot-col">
+        <h5>Ссылки</h5>
+        <ul>
+          <li><a href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+            Telegram-канал
+          </a></li>
+          <li><a href="https://t.me/farawayrp26" target="_blank" rel="noopener">🛒 Барахолка 26-го</a></li>
+          <li><a href="https://discord.gg/arzfaraway" target="_blank" rel="noopener">🎧 Discord 26-го</a></li>
+          <li><a href="https://ffhelper.by/login" target="_blank" rel="noopener">🛡️ RakBot</a></li>
+          <li><a href="https://forum.arizona-rp.com/forums/2905/" target="_blank" rel="noopener">💬 Форум 26-го</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="foot-legal">
+      <a class="terms-ico" href="terms.html">📄 Пользовательское соглашение</a>
+      <a class="privacy-ico" href="privacy.html">🔒 Политика конфиденциальности</a>
+      <a class="docs-ico" href="privacy.html#p2">🛡️ Мы не собираем данные</a>
+      <a class="docs-ico" href="terms.html#s7">🛡️ Приватность и локальное хранилище</a>
+    </div>
+
+    <div class="foot-bottom">
+      <span>© 2026 · Arizona Faraway — 26 · фан-сайт сервера</span>
+      <span>Разработчик: <a href="https://t.me/Eduardus_Maker">Eduardo 🛠</a></span>
+      <span>Сделано с <span class="heart">♥</span> для игроков</span>
+    </div>
+  </footer>
+
+</div>
+
+<button id="toTop" title="Наверх">↑</button>
+
+<script>
+  (function(){
+    const glow = document.getElementById('cursorGlow');
+    if(glow){
+      let mx = window.innerWidth / 2;
+      let my = window.innerHeight / 3;
+      let cx = mx, cy = my;
+      document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+      (function tick(){
+        cx += (mx - cx) * 0.12;
+        cy += (my - cy) * 0.12;
+        glow.style.transform = `translate3d(${cx}px, ${cy}px, 0)`;
+        requestAnimationFrame(tick);
+      })();
+    }
+  })();
+
+  (function(){
+    const toTop = document.getElementById('toTop');
+    window.addEventListener('scroll', () => toTop.classList.toggle('show', window.scrollY > 500));
+    toTop.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+  })();
+
+  (function(){
+    const burger = document.getElementById('burger');
+    const navLinks = document.getElementById('navLinks');
+    if(!burger || !navLinks) return;
+    burger.addEventListener('click', e => { e.stopPropagation(); navLinks.classList.toggle('open'); });
+    document.addEventListener('click', e => {
+      if(!navLinks.contains(e.target) && e.target !== burger) navLinks.classList.remove('open');
+    });
+    navLinks.querySelectorAll('a').forEach(a => a.addEventListener('click', () => navLinks.classList.remove('open')));
+  })();
+
+  document.querySelectorAll('.big-card, .updates-banner').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const r = card.getBoundingClientRect();
+      card.style.setProperty('--mx', ((e.clientX - r.left) / r.width * 100) + '%');
+      card.style.setProperty('--my', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+  });
+
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const id = a.getAttribute('href');
+      if(id === '#' || id.length < 2) return;
+      const el = document.querySelector(id);
+      if(el){
+        e.preventDefault();
+        const top = el.getBoundingClientRect().top + window.scrollY - 90;
+        window.scrollTo({top, behavior:'smooth'});
+      }
+    });
+  });
+
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if(e.isIntersecting){
+        e.target.style.animation = 'fadeUp .6s ease forwards';
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold:.08});
+  document.querySelectorAll('.feat, .qi, .big-card, .updates-banner').forEach(el => {
+    el.style.opacity = '0';
+    io.observe(el);
+  });
+  const style = document.createElement('style');
+  style.textContent = '@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}';
+  document.head.appendChild(style);
+
+  /* ============================================================
+     TELEGRAM LOGIN (WebApp + ручной)
+     ============================================================ */
+  const TG_STORAGE_KEY = 'azfw26_tg_user';
+  const TG_BOT_KEY = 'azfw26_tg_bot';
+
+  function getTgUser(){
+    try {
+      const raw = localStorage.getItem(TG_STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch(e){ return null; }
+  }
+
+  function renderUserChip(){
+    const slot = document.getElementById('userSlot');
+    const user = getTgUser();
+    if(!user || !slot) return;
+    slot.innerHTML = `
+      <span class="user-chip" id="userChip" title="Выйти из аккаунта">
+        <span class="av">${user.photo_url ? `<img src="${user.photo_url}" alt="">` : (user.first_name || user.username || 'T').charAt(0).toUpperCase()}</span>
+        @${user.username || ('id' + user.id)}
+      </span>
+    `;
+    const chip = document.getElementById('userChip');
+    chip.addEventListener('click', () => {
+      if(confirm('Выйти из аккаунта Telegram?')){
+        localStorage.removeItem(TG_STORAGE_KEY);
+        location.reload();
+      }
+    });
+  }
+
+  function saveTgUser(user){
+    const clean = {
+      id: user.id,
+      username: user.username || ('id' + user.id),
+      first_name: user.first_name || '',
+      last_name: user.last_name || '',
+      photo_url: user.photo_url || ''
+    };
+    localStorage.setItem(TG_STORAGE_KEY, JSON.stringify(clean));
+    renderUserChip();
+    updateLoginCard();
+    if(window.AZFW && window.AZFW.toast) window.AZFW.toast('✓ Вошёл как @' + clean.username);
+    else alert('Вошёл как @' + clean.username);
+  }
+
+  const tgWa = window.Telegram && window.Telegram.WebApp;
+  if(tgWa && tgWa.initDataUnsafe && tgWa.initDataUnsafe.user){
+    tgWa.ready();
+    tgWa.expand && tgWa.expand();
+    saveTgUser(tgWa.initDataUnsafe.user);
+  }
+
+  function updateLoginCard(){
+    const user = getTgUser();
+    const btnLabel = document.getElementById('loginBtnLabel');
+    const cardText = document.getElementById('loginCardText');
+    if(!btnLabel) return;
+    if(user){
+      btnLabel.textContent = 'Выйти (' + (user.username ? '@' + user.username : 'id' + user.id) + ')';
+      cardText.textContent = 'Ты вошёл как ' + (user.first_name || '') + ' ' + (user.last_name || '') + ' (@' + user.username + '). Профиль сохранён локально.';
+    } else {
+      btnLabel.textContent = 'Войти через Telegram';
+      cardText.textContent = 'Быстрый вход через Telegram. Если открываешь сайт внутри Telegram — вход произойдёт автоматически.';
+    }
+  }
+
+  document.getElementById('loginBtn').addEventListener('click', () => {
+    if(getTgUser()){
+      if(confirm('Выйти из аккаунта Telegram?')){
+        localStorage.removeItem(TG_STORAGE_KEY);
+        location.reload();
+      }
+      return;
+    }
+    if(tgWa && tgWa.initDataUnsafe && tgWa.initDataUnsafe.user){
+      saveTgUser(tgWa.initDataUnsafe.user);
+      return;
+    }
+    const uname = prompt('Введи свой Telegram username (без @):');
+    if(!uname) return;
+    const clean = uname.replace(/^@/, '').trim();
+    if(!/^[A-Za-z0-9_]{4,32}$/.test(clean)){
+      alert('Некорректный username');
+      return;
+    }
+    saveTgUser({
+      id: 'manual_' + clean,
+      username: clean,
+      first_name: clean,
+      last_name: '',
+      photo_url: ''
+    });
+  });
+
+  (function(){
+    const user = getTgUser();
+    if(user){ renderUserChip(); updateLoginCard(); }
+  })();
+</script>
+
+<script src="theme.js"></script>
+
+</body>
+</html>

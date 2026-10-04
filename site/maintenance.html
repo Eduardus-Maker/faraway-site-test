@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="ocean">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Техническое обслуживание · Arizona Faraway — 26</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%}
+  body{
+    font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg-0);color:var(--text);
+    line-height:1.65;min-height:100vh;
+    display:grid;place-items:center;
+    padding:24px;
+    -webkit-font-smoothing:antialiased;
+    transition:background .4s, color .4s;
+    overflow-x:hidden;
+  }
+  .bg-layer{
+    position:fixed;inset:0;z-index:-1;overflow:hidden;
+    background:var(--bg-image), var(--bg-0);
+  }
+  .bg-layer::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+  }
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.3;animation:float 26s ease-in-out infinite}
+  .orb.o1{width:420px;height:420px;background:var(--yellow);top:-120px;left:-110px}
+  .orb.o2{width:360px;height:360px;background:var(--accent);bottom:8%;right:-100px;animation-delay:-9s}
+  @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}}
+
+  .card{
+    max-width:640px;width:100%;
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--card-2) 60%, transparent));
+    border:1px solid var(--border);
+    border-radius:24px;
+    padding:46px 40px 38px;
+    text-align:center;
+    position:relative;z-index:2;
+    box-shadow:0 30px 90px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.03) inset;
+    animation:fadeUp .6s ease both;
+  }
+  @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+
+  .badge{
+    display:inline-flex;align-items:center;gap:9px;
+    background:color-mix(in srgb, var(--yellow) 12%, transparent);
+    border:1px solid color-mix(in srgb, var(--yellow) 45%, transparent);
+    color:var(--yellow);
+    font-size:11.5px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;
+    padding:7px 18px;border-radius:999px;
+    margin-bottom:22px;
+  }
+  .badge .dot{width:7px;height:7px;background:var(--yellow);border-radius:50%;box-shadow:0 0 10px var(--yellow);animation:pulse-dot 1.6s ease-in-out infinite}
+  @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+  .icon{
+    width:96px;height:96px;
+    margin:0 auto 24px;
+    background:linear-gradient(135deg,var(--yellow),var(--accent));
+    border-radius:28px;
+    display:grid;place-items:center;
+    font-size:48px;
+    color:#fff;
+    box-shadow:0 20px 60px color-mix(in srgb, var(--yellow) 35%, transparent);
+    animation:bob 4s ease-in-out infinite;
+    position:relative;
+  }
+  .icon::after{
+    content:'';position:absolute;inset:-6px;
+    border-radius:34px;
+    background:conic-gradient(from 0deg,var(--yellow),var(--accent),var(--violet),var(--yellow));
+    opacity:.35;z-index:-1;filter:blur(24px);
+    animation:spin 9s linear infinite;
+  }
+  @keyframes bob{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  h1{
+    font-size:clamp(24px,4vw,34px);
+    font-weight:900;letter-spacing:-1px;line-height:1.15;
+    margin-bottom:12px;
+    background:linear-gradient(135deg,var(--text),var(--yellow) 60%,var(--accent-2));
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  }
+  .lead{
+    color:var(--text-2);font-size:15px;line-height:1.7;
+    margin:0 auto 26px;max-width:460px;
+  }
+
+  .reason{
+    background:color-mix(in srgb, var(--bg-0) 55%, transparent);
+    border:1px solid var(--border);
+    border-left:3px solid var(--yellow);
+    border-radius:14px;
+    padding:18px 22px;
+    text-align:left;
+    margin-bottom:26px;
+  }
+  .reason .lbl{
+    font-size:11px;text-transform:uppercase;letter-spacing:1.2px;
+    color:var(--dim);font-weight:700;margin-bottom:8px;
+  }
+  .reason .txt{
+    font-size:14.5px;color:var(--text);line-height:1.65;
+    white-space:pre-wrap;word-break:break-word;
+  }
+
+  .meta{
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+    margin-bottom:28px;
+  }
+  .meta .chip{
+    display:inline-flex;align-items:center;gap:7px;
+    font-size:12px;font-weight:600;color:var(--text-2);
+    background:color-mix(in srgb, var(--card-2) 60%, transparent);
+    border:1px solid var(--border);
+    padding:6px 14px;border-radius:999px;
+  }
+  .meta .chip b{color:var(--accent-2);font-weight:700}
+
+  .actions{display:flex;gap:12px;flex-wrap:wrap;justify-content:center}
+
+  .btn{
+    display:inline-flex;align-items:center;gap:9px;
+    padding:13px 24px;border-radius:13px;
+    font-size:14px;font-weight:700;
+    font-family:inherit;text-decoration:none;cursor:pointer;border:none;
+    transition:.28s cubic-bezier(.4,0,.2,1);
+    white-space:nowrap;
+  }
+  .btn-primary{
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    color:#fff;
+    box-shadow:0 10px 32px var(--glow);
+  }
+  .btn-primary:hover{transform:translateY(-2px);box-shadow:0 16px 44px var(--glow)}
+  .btn-ghost{
+    background:color-mix(in srgb, var(--card) 70%, transparent);
+    border:1px solid var(--border-2);
+    color:var(--text);
+  }
+  .btn-ghost:hover{border-color:var(--accent);background:color-mix(in srgb, var(--card-2) 90%, transparent);transform:translateY(-2px)}
+
+  .foot{
+    margin-top:30px;padding-top:22px;
+    border-top:1px solid var(--border);
+    font-size:12px;color:var(--dim);
+    display:flex;justify-content:center;gap:16px;flex-wrap:wrap;
+  }
+  .foot a{color:var(--dim);text-decoration:none;font-weight:600;transition:.2s}
+  .foot a:hover{color:var(--accent-2)}
+
+  @media (max-width:640px){
+    .card{padding:34px 24px 30px;border-radius:20px}
+    .icon{width:80px;height:80px;font-size:38px;border-radius:22px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+</div>
+
+<main class="card">
+  <div class="badge"><span class="dot"></span>Техническое обслуживание</div>
+
+  <div class="icon">🛠️</div>
+
+  <h1>Сайт временно на обслуживании</h1>
+  <p class="lead">Мы проводим технические работы и совсем скоро вернёмся. Спасибо за понимание.</p>
+
+  <div class="reason" id="reasonBox">
+    <div class="lbl">Причина</div>
+    <div class="txt" id="reasonText">Плановое обновление раздела обновлений и технической части сайта.</div>
+  </div>
+
+  <div class="meta" id="metaRow">
+    <span class="chip">⏱ Начало: <b id="startedAt">—</b></span>
+    <span class="chip">📡 Статус: <b>в работе</b></span>
+  </div>
+
+  <div class="actions">
+    <a class="btn btn-primary" href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">
+      📢 Новости в Telegram
+    </a>
+    <a class="btn btn-ghost" href="admin.html">
+      🔐 Вход для администрации
+    </a>
+  </div>
+
+  <div class="foot">
+    <a href="terms.html">Пользовательское соглашение</a>
+    <a href="privacy.html">Политика конфиденциальности</a>
+  </div>
+</main>
+
+<script>
+  /* Подтягиваем актуальный текст тех. режима */
+  (function(){
+    fetch('data/status.json?t=' + Date.now())
+      .then(function(r){ return r.ok ? r.json() : null; })
+      .then(function(d){
+        if(!d) return;
+        if(d.message){
+          var t = document.getElementById('reasonText');
+          if(t) t.textContent = d.message;
+        }
+        if(d.started_at){
+          var s = document.getElementById('startedAt');
+          if(s){
+            try{
+              var dt = new Date(d.started_at);
+              s.textContent = dt.toLocaleString('ru-RU', {
+                day:'numeric', month:'long', hour:'2-digit', minute:'2-digit'
+              });
+            }catch(e){ s.textContent = d.started_at; }
+          }
+        }
+      })
+      .catch(function(){});
+  })();
+</script>
+
+<script src="maintenance.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>

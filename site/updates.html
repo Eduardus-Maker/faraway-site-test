@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Обновления · Arizona Faraway — 26</title>
+<style>
+  :root{
+    --bg-0:#03060f;--card:#0b1e3d;--card-2:#0f2a54;--border:#173a6e;--border-2:#1f4a8a;
+    --accent:#3b82f6;--accent-2:#60a5fa;--accent-3:#93c5fd;--glow:rgba(59,130,246,.45);
+    --text:#e8effa;--text-2:#b3c4dd;--dim:#7d93b5;--green:#34d399;--violet:#a78bfa;--tg:#229ED9;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:90px}
+  body{
+    font-family:'Inter','Segoe UI',system-ui,sans-serif;
+    background:var(--bg-0);color:var(--text);
+    line-height:1.65;min-height:100vh;overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  .bg-layer{
+    position:fixed;inset:0;z-index:-1;overflow:hidden;
+    background:
+      radial-gradient(1400px 700px at 50% -20%, #0e2a56 0%, transparent 55%),
+      radial-gradient(900px 500px at 90% 100%, #0a1f42 0%, transparent 60%),
+      radial-gradient(700px 400px at 0% 60%, #071b3d 0%, transparent 60%),
+      var(--bg-0);
+  }
+  .bg-layer::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(rgba(59,130,246,.035) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(59,130,246,.035) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+  }
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.32;animation:float 26s ease-in-out infinite}
+  .orb.o1{width:480px;height:480px;background:#1e40af;top:-140px;left:-120px}
+  .orb.o2{width:380px;height:380px;background:#0ea5e9;bottom:6%;right:-110px;animation-delay:-9s}
+  .orb.o3{width:320px;height:320px;background:#7c3aed;top:48%;left:38%;animation-delay:-16s}
+  @keyframes float{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(50px,-40px) scale(1.1)}66%{transform:translate(-40px,40px) scale(.92)}}
+  .wrap{max-width:1180px;margin:0 auto;padding:0 22px 100px;position:relative;z-index:2}
+
+  .announce{
+    background:linear-gradient(90deg,rgba(34,158,217,.12),rgba(59,130,246,.12),rgba(167,139,250,.12));
+    border-bottom:1px solid rgba(34,158,217,.35);
+    padding:9px 20px;font-size:13px;text-align:center;
+    position:relative;z-index:60;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  .announce-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .announce a{color:var(--tg);text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:6px;padding:2px 6px;border-radius:6px;transition:.2s}
+  .announce a:hover{background:rgba(34,158,217,.15);color:#4cb8ef}
+  .announce .label{color:var(--text-2)}
+  .announce .dot-live{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green);animation:pulse-dot 1.8s ease-in-out infinite}
+  @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+  .nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    background:rgba(5,14,31,.82);
+    border-bottom:1px solid var(--border);
+    margin:0 -22px;padding:14px 22px;
+  }
+  .nav-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;gap:22px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15px;text-decoration:none;color:var(--text)}
+  .brand .logo{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--violet));border-radius:11px;display:grid;place-items:center;font-size:19px;box-shadow:0 0 22px var(--glow);transition:.3s}
+  .brand:hover .logo{transform:rotate(-8deg) scale(1.06)}
+  .brand-text{display:flex;flex-direction:column;line-height:1.15}
+  .brand-text .t{font-size:14.5px;font-weight:800;letter-spacing:-.2px}
+  .brand-text .s{font-size:11px;color:var(--dim);font-weight:500}
+  .nav-links{display:flex;gap:6px;margin-left:auto;align-items:center;flex-wrap:wrap}
+  .nav-links a{color:var(--text-2);text-decoration:none;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:9px;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+  .nav-links a:hover{color:#fff;background:rgba(59,130,246,.12)}
+  .nav-links a.active{color:#fff;background:rgba(59,130,246,.18);border:1px solid rgba(59,130,246,.35)}
+  .nav-cta{background:linear-gradient(135deg,var(--tg),#1c7fb3);color:#fff !important;padding:8px 16px !important;border-radius:9px !important;font-weight:700 !important;display:inline-flex !important;align-items:center;gap:7px !important;box-shadow:0 0 20px rgba(34,158,217,.3);transition:.3s !important}
+  .nav-cta:hover{background:linear-gradient(135deg,#4cb8ef,#229ED9) !important;transform:translateY(-1px);box-shadow:0 0 30px rgba(34,158,217,.5)}
+  .burger{display:none;background:rgba(11,30,61,.85);border:1px solid var(--border);color:var(--text);width:40px;height:40px;border-radius:10px;cursor:pointer;font-size:18px;transition:.2s}
+  .burger:hover{border-color:var(--accent)}
+
+  .hero{padding:64px 0 34px;text-align:center}
+  .hero .badge{display:inline-flex;align-items:center;gap:8px;background:rgba(59,130,246,.1);border:1px solid rgba(59,130,246,.4);color:var(--accent-3);font-size:12.5px;font-weight:600;letter-spacing:.6px;text-transform:uppercase;padding:7px 18px;border-radius:999px;margin-bottom:22px;animation:pulse-border 3s ease-in-out infinite}
+  @keyframes pulse-border{0%,100%{box-shadow:0 0 24px rgba(59,130,246,.15)}50%{box-shadow:0 0 36px rgba(59,130,246,.35)}}
+  .hero .badge .dot{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green);animation:pulse-dot 1.8s ease-in-out infinite}
+  h1.hero-title{font-size:clamp(34px,6vw,58px);font-weight:900;letter-spacing:-1.5px;line-height:1.05;background:linear-gradient(135deg,#e8effa 0%,#60a5fa 45%,#a78bfa 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:16px}
+  .hero-desc{color:var(--text-2);font-size:16px;max-width:620px;margin:0 auto 34px;line-height:1.7}
+  .hero-desc b{color:var(--text);font-weight:600}
+
+  .updates-list{display:grid;gap:18px;margin-top:20px}
+
+  .update-card{
+    position:relative;
+    background:linear-gradient(160deg,var(--card) 0%,rgba(8,22,50,.7) 100%);
+    border:1px solid var(--border);
+    border-radius:20px;
+    padding:28px 30px;
+    text-decoration:none;color:inherit;
+    overflow:hidden;
+    transition:.4s cubic-bezier(.4,0,.2,1);
+    display:grid;
+    grid-template-columns:auto 1fr auto;
+    align-items:center;
+    gap:24px;
+  }
+  .update-card::before{
+    content:'';position:absolute;inset:0;
+    background:radial-gradient(circle at var(--mx,50%) var(--my,50%), rgba(59,130,246,.16), transparent 55%);
+    opacity:0;transition:.4s;pointer-events:none;
+  }
+  .update-card:hover{
+    transform:translateY(-4px);
+    border-color:var(--border-2);
+    box-shadow:0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(59,130,246,.2);
+  }
+  .update-card:hover::before{opacity:1}
+
+  .uc-date{
+    width:80px;height:80px;
+    flex-shrink:0;
+    background:linear-gradient(135deg,rgba(59,130,246,.18),rgba(167,139,250,.1));
+    border:1px solid var(--border-2);
+    border-radius:18px;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    text-align:center;line-height:1;
+    position:relative;z-index:1;
+    transition:.3s;
+  }
+  .update-card:hover .uc-date{
+    background:linear-gradient(135deg,rgba(59,130,246,.3),rgba(167,139,250,.2));
+    border-color:var(--accent);
+    box-shadow:0 0 24px rgba(59,130,246,.3);
+  }
+  .uc-date .d{font-size:26px;font-weight:800;color:var(--text)}
+  .uc-date .m{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:var(--accent-2);margin-top:3px}
+  .uc-date .y{font-size:10px;color:var(--dim);margin-top:2px}
+
+  .uc-body{position:relative;z-index:1;min-width:0}
+  .uc-body h3{font-size:19px;font-weight:800;letter-spacing:-.3px;margin-bottom:6px}
+  .uc-body p{color:var(--text-2);font-size:13.5px;line-height:1.55;margin-bottom:12px}
+  .uc-stats{display:flex;flex-wrap:wrap;gap:8px}
+  .uc-stat{
+    font-size:11.5px;color:var(--text-2);
+    background:rgba(3,6,15,.5);
+    border:1px solid rgba(23,58,110,.6);
+    padding:3px 10px;border-radius:999px;
+    font-weight:600;
+    display:inline-flex;align-items:center;gap:5px;
+  }
+  .uc-stat b{color:var(--accent-2);font-weight:700}
+  .uc-stat.add b{color:var(--green)}
+  .uc-stat.del b{color:#f87171}
+
+  .uc-arrow{
+    flex-shrink:0;position:relative;z-index:1;
+    width:48px;height:48px;
+    background:rgba(59,130,246,.1);
+    border:1px solid rgba(59,130,246,.3);
+    border-radius:14px;
+    display:grid;place-items:center;
+    font-size:20px;color:var(--accent-2);
+    transition:.3s;
+  }
+  .update-card:hover .uc-arrow{
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    color:#fff;
+    border-color:transparent;
+    transform:translate(4px,-4px) rotate(-4deg);
+    box-shadow:0 0 24px var(--glow);
+  }
+
+  .loading,.error{
+    text-align:center;padding:60px 20px;
+    color:var(--dim);font-size:15px;
+  }
+  .error{color:#f87171}
+
+  footer{margin-top:80px;padding-top:40px;border-top:1px solid var(--border);text-align:center;color:var(--dim);font-size:13px}
+  footer a{color:var(--accent-2);text-decoration:none;font-weight:600}
+  footer a:hover{text-decoration:underline}
+
+  #toTop{
+    position:fixed;bottom:26px;right:26px;width:48px;height:48px;border-radius:14px;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    color:#fff;border:none;font-size:19px;cursor:pointer;
+    opacity:0;pointer-events:none;transition:.3s cubic-bezier(.4,0,.2,1);
+    box-shadow:0 8px 30px var(--glow);z-index:40;
+  }
+  #toTop.show{opacity:1;pointer-events:auto}
+  #toTop:hover{transform:translateY(-4px) scale(1.05);box-shadow:0 12px 40px var(--glow)}
+
+  @media (max-width:720px){
+    .nav-links{display:none;position:absolute;top:calc(100% + 8px);right:22px;left:22px;flex-direction:column;background:rgba(5,14,31,.98);border:1px solid var(--border-2);border-radius:14px;padding:10px;box-shadow:0 20px 60px rgba(0,0,0,.6);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px)}
+    .nav-links.open{display:flex}
+    .nav-links a{width:100%;justify-content:flex-start}
+    .burger{display:grid;place-items:center;margin-left:auto}
+    .hero{padding:44px 0 20px}
+    .update-card{grid-template-columns:1fr;gap:18px;padding:22px 22px}
+    .uc-date{width:70px;height:70px;margin:0 auto}
+    .uc-body{text-align:center}
+    .uc-stats{justify-content:center}
+    .uc-arrow{margin:0 auto}
+    .nav{padding:12px 22px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+  <div class="orb o3"></div>
+</div>
+
+<div class="announce">
+  <div class="announce-inner">
+    <span class="dot-live"></span>
+    <span class="label">Материал подготовлен редакцией</span>
+    <a href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">
+      Arizona Faraway — 26
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M7 17L17 7"/><path d="M7 7h10v10"/></svg>
+    </a>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="logo">⚡</span>
+      <span class="brand-text">
+        <span class="t">Arizona Faraway — 26</span>
+        <span class="s">обновления сервера</span>
+      </span>
+    </a>
+    <button class="burger" id="burger" aria-label="Меню">☰</button>
+    <div class="nav-links" id="navLinks">
+      <a href="index.html">Главная</a>
+      <a href="updates.html" class="active">📋 Обновления</a>
+      <a class="nav-cta" href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M9.78 18.65l.28-4.23 7.68-6.92c.34-.31-.07-.46-.52-.19L7.74 13.3 3.64 12c-.88-.25-.89-.86.2-1.3l15.97-6.16c.73-.33 1.43.18 1.15 1.3l-2.72 12.81c-.19.91-.74 1.13-1.5.71L12.6 16.3l-1.99 1.93c-.23.23-.42.42-.83.42z"/></svg>
+        Telegram
+      </a>
+    </div>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="badge"><span class="dot"></span>Живой архив</div>
+    <h1 class="hero-title">Обновления сервера</h1>
+    <p class="hero-desc">Каждая обнова — отдельная страница. Открой нужную и увидишь полный разбор: <b>что было</b>, <b>что стало</b> и почему.</p>
+  </header>
+
+  <div id="list" class="updates-list">
+    <div class="loading">Загружаем список обновлений…</div>
+  </div>
+
+  <footer>
+    <p><a href="index.html">← Вернуться на главную</a></p>
+    <p style="margin-top:8px;font-size:12px;opacity:.7">© 2026 · Arizona Faraway — 26 · <a href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">Telegram</a></p>
+  </footer>
+
+</div>
+
+<button id="toTop" title="Наверх">↑</button>
+
+<script>
+  const MONTHS = ["янв","фев","мар","апр","мая","июн","июл","авг","сен","окт","ноя","дек"];
+
+  function plural(n, one, few, many){
+    const m10 = n % 10, m100 = n % 100;
+    if(m10 === 1 && m100 !== 11) return one;
+    if(m10 >= 2 && m10 <= 4 && (m100 < 10 || m100 >= 20)) return few;
+    return many;
+  }
+
+  function parseDate(s){
+    const [y,m,d] = s.split("-");
+    return { y, m: Number(m)-1, d: Number(d) };
+  }
+
+  function renderList(updates){
+    const list = document.getElementById("list");
+    if(!updates.length){
+      list.innerHTML = '<div class="loading">Обновлений пока нет</div>';
+      return;
+    }
+    const sorted = [...updates].sort((a,b) => b.date.localeCompare(a.date));
+    list.innerHTML = sorted.map(u => {
+      const d = parseDate(u.date);
+      const s = u.stats || {};
+      return `
+        <a class="update-card" href="update.html?id=${encodeURIComponent(u.id)}">
+          <div class="uc-date">
+            <div class="d">${d.d}</div>
+            <div class="m">${MONTHS[d.m]}</div>
+            <div class="y">${d.y}</div>
+          </div>
+          <div class="uc-body">
+            <h3>${escapeHTML(u.title)}</h3>
+            <p>${escapeHTML(u.summary || "")}</p>
+            <div class="uc-stats">
+              ${s.files ? `<span class="uc-stat"><b>${s.files}</b> файлов</span>` : ""}
+              ${s.additions ? `<span class="uc-stat add"><b>+${s.additions}</b> добавлено</span>` : ""}
+              ${s.deletions ? `<span class="uc-stat del"><b>−${s.deletions}</b> удалено</span>` : ""}
+              ${s.commits ? `<span class="uc-stat"><b>${s.commits}</b> ${plural(s.commits,"коммит","коммита","коммитов")}</span>` : ""}
+            </div>
+          </div>
+          <div class="uc-arrow">→</div>
+        </a>
+      `;
+    }).join("");
+
+    document.querySelectorAll(".update-card").forEach(card => {
+      card.addEventListener("mousemove", e => {
+        const r = card.getBoundingClientRect();
+        card.style.setProperty("--mx", ((e.clientX - r.left) / r.width * 100) + "%");
+        card.style.setProperty("--my", ((e.clientY - r.top) / r.height * 100) + "%");
+      });
+    });
+  }
+
+  function escapeHTML(s){
+    return String(s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+  }
+
+  async function load(){
+    try {
+      const r = await fetch("data/index.json?t=" + Date.now());
+      if(!r.ok) throw new Error("HTTP " + r.status);
+      const data = await r.json();
+      renderList(data.updates || []);
+    } catch(err){
+      document.getElementById("list").innerHTML =
+        '<div class="error">Не удалось загрузить список: ' + escapeHTML(err.message) + '</div>';
+    }
+  }
+
+  document.getElementById("burger").addEventListener("click", e => {
+    e.stopPropagation();
+    document.getElementById("navLinks").classList.toggle("open");
+  });
+  document.addEventListener("click", e => {
+    const nl = document.getElementById("navLinks");
+    if(!nl.contains(e.target) && e.target.id !== "burger") nl.classList.remove("open");
+  });
+
+  const toTop = document.getElementById("toTop");
+  window.addEventListener("scroll", () => toTop.classList.toggle("show", window.scrollY > 500));
+  toTop.addEventListener("click", () => window.scrollTo({top:0, behavior:"smooth"}));
+
+  load();
+</script>
+</body>
+</html>

@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="ru" data-theme="ocean">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="index, follow">
+<title>Пользовательское соглашение · Arizona Faraway — 26</title>
+<meta name="description" content="Пользовательское соглашение фан-сайта Arizona Faraway — 26: правила использования, контент, авторские права, ответственность.">
+<link rel="stylesheet" href="theme.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  html{scroll-behavior:smooth;scroll-padding-top:90px}
+  body{
+    font-family:'Inter','Segoe UI',system-ui,-apple-system,sans-serif;
+    background:var(--bg-0);color:var(--text);
+    line-height:1.7;min-height:100vh;
+    -webkit-font-smoothing:antialiased;
+    transition:background .4s, color .4s;
+  }
+  .bg-layer{
+    position:fixed;inset:0;z-index:-1;overflow:hidden;
+    background:var(--bg-image), var(--bg-0);
+  }
+  .bg-layer::before{
+    content:'';position:absolute;inset:0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:64px 64px;
+    mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+    -webkit-mask-image:radial-gradient(ellipse 80% 60% at 50% 40%, #000 40%, transparent 80%);
+  }
+  .orb{position:absolute;border-radius:50%;filter:blur(90px);opacity:.28;animation:float 26s ease-in-out infinite}
+  .orb.o1{width:420px;height:420px;background:var(--accent);top:-120px;left:-110px}
+  .orb.o2{width:360px;height:360px;background:var(--violet);bottom:8%;right:-100px;animation-delay:-9s}
+  @keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(40px,-30px) scale(1.08)}}
+
+  .announce{
+    background:linear-gradient(90deg,
+      color-mix(in srgb, var(--tg) 12%, transparent),
+      color-mix(in srgb, var(--accent) 12%, transparent),
+      color-mix(in srgb, var(--violet) 12%, transparent));
+    border-bottom:1px solid color-mix(in srgb, var(--tg) 35%, transparent);
+    padding:9px 20px;font-size:13px;text-align:center;
+    position:relative;z-index:60;
+    backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  }
+  .announce-inner{max-width:1180px;margin:0 auto;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap}
+  .announce a{color:var(--tg);text-decoration:none;font-weight:700;display:inline-flex;align-items:center;gap:6px}
+  .announce .label{color:var(--text-2)}
+  .announce .dot-live{width:7px;height:7px;background:var(--green);border-radius:50%;box-shadow:0 0 10px var(--green);animation:pulse-dot 1.8s ease-in-out infinite}
+  @keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.85)}}
+
+  .nav{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+    background:color-mix(in srgb, var(--bg-0) 82%, transparent);
+    border-bottom:1px solid var(--border);
+    padding:14px 22px;
+  }
+  .nav-inner{max-width:1000px;margin:0 auto;display:flex;align-items:center;gap:18px}
+  .brand{display:flex;align-items:center;gap:11px;font-weight:700;font-size:15px;text-decoration:none;color:var(--text)}
+  .brand .logo{width:38px;height:38px;background:linear-gradient(135deg,var(--accent),var(--violet));border-radius:11px;display:grid;place-items:center;font-size:19px;box-shadow:0 0 22px var(--glow)}
+  .brand-text{display:flex;flex-direction:column;line-height:1.15}
+  .brand-text .t{font-size:14.5px;font-weight:800}
+  .brand-text .s{font-size:11px;color:var(--dim);font-weight:500}
+  .nav-back{margin-left:auto;color:var(--text-2);text-decoration:none;font-size:13.5px;font-weight:600;padding:8px 14px;border-radius:9px;transition:.2s;display:inline-flex;align-items:center;gap:6px}
+  .nav-back:hover{color:var(--text);background:color-mix(in srgb, var(--accent) 12%, transparent)}
+
+  .wrap{max-width:900px;margin:0 auto;padding:56px 22px 100px;position:relative;z-index:2}
+
+  .hero{text-align:center;margin-bottom:44px}
+  .hero .badge{
+    display:inline-flex;align-items:center;gap:8px;
+    background:color-mix(in srgb, var(--accent) 10%, transparent);
+    border:1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+    color:var(--accent-3);
+    font-size:12px;font-weight:700;letter-spacing:1.2px;text-transform:uppercase;
+    padding:7px 18px;border-radius:999px;margin-bottom:20px;
+  }
+  h1.hero-title{
+    font-size:clamp(30px,5vw,46px);font-weight:900;letter-spacing:-1.2px;line-height:1.1;
+    background:linear-gradient(135deg,var(--text) 0%,var(--accent-2) 50%,var(--violet) 100%);
+    -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+    margin-bottom:14px;
+  }
+  .hero-desc{color:var(--text-2);font-size:15.5px;max-width:640px;margin:0 auto}
+
+  .toc{
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--card-2) 60%, transparent));
+    border:1px solid var(--border);border-radius:16px;
+    padding:20px 24px;margin-bottom:26px;
+  }
+  .toc .toc-title{
+    font-size:12px;text-transform:uppercase;letter-spacing:1.2px;
+    color:var(--dim);font-weight:700;margin-bottom:12px;
+  }
+  .toc ol{
+    list-style:none;counter-reset:toc;
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px 18px;
+  }
+  .toc li{counter-increment:toc;font-size:13.5px}
+  .toc li::before{content:counter(toc) ". ";color:var(--accent-2);font-weight:700;margin-right:4px}
+  .toc a{color:var(--text-2);text-decoration:none;transition:.2s}
+  .toc a:hover{color:var(--accent-2)}
+
+  .panel{
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--card-2) 60%, transparent));
+    border:1px solid var(--border);border-radius:20px;
+    padding:34px 36px;margin-bottom:20px;
+    scroll-margin-top:90px;
+  }
+  .panel h2{
+    font-size:20px;font-weight:800;letter-spacing:-.4px;margin-bottom:16px;
+    display:flex;align-items:center;gap:12px;
+  }
+  .panel h2 .num{
+    width:34px;height:34px;border-radius:10px;
+    background:linear-gradient(135deg,var(--accent),var(--violet));
+    color:#fff;font-size:14px;font-weight:800;
+    display:grid;place-items:center;flex-shrink:0;
+    box-shadow:0 6px 20px var(--glow);
+  }
+  .panel h3{
+    font-size:15.5px;font-weight:700;margin:20px 0 10px;
+    color:var(--accent-2);letter-spacing:-.2px;
+  }
+  .panel p{color:var(--text-2);font-size:14.5px;margin-bottom:12px;line-height:1.75}
+  .panel p:last-child{margin-bottom:0}
+  .panel ul{list-style:none;margin:10px 0 14px;padding:0}
+  .panel ul li{
+    color:var(--text-2);font-size:14.5px;
+    padding:8px 0 8px 30px;position:relative;line-height:1.65;
+  }
+  .panel ul li::before{
+    content:'✓';
+    position:absolute;left:4px;top:8px;
+    color:var(--green);font-weight:800;font-size:13px;
+  }
+  .panel ul.cross li::before{content:'✕';color:var(--red)}
+  .panel b, .panel strong{color:var(--text);font-weight:700}
+  .panel code{
+    font-family:'JetBrains Mono','Consolas',monospace;
+    background:color-mix(in srgb, var(--accent) 10%, transparent);
+    padding:1px 7px;border-radius:5px;font-size:13px;
+    color:var(--accent-3);
+  }
+  .panel a{color:var(--accent-2);text-decoration:none;font-weight:600;border-bottom:1px dashed var(--accent-2)}
+  .panel a:hover{color:var(--accent-3);border-bottom-style:solid}
+
+  .notice{
+    background:linear-gradient(135deg, color-mix(in srgb, var(--green) 8%, transparent), color-mix(in srgb, var(--green) 2%, transparent));
+    border:1px solid color-mix(in srgb, var(--green) 35%, transparent);
+    border-left:3px solid var(--green);
+    border-radius:14px;padding:18px 22px;
+    margin:18px 0;display:flex;gap:14px;align-items:flex-start;
+  }
+  .notice.warn{
+    background:linear-gradient(135deg, color-mix(in srgb, var(--yellow) 8%, transparent), color-mix(in srgb, var(--yellow) 2%, transparent));
+    border-color:color-mix(in srgb, var(--yellow) 35%, transparent);
+    border-left-color:var(--yellow);
+  }
+  .notice.info{
+    background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 8%, transparent), color-mix(in srgb, var(--accent) 2%, transparent));
+    border-color:color-mix(in srgb, var(--accent) 35%, transparent);
+    border-left-color:var(--accent);
+  }
+  .notice .ico{
+    width:38px;height:38px;flex-shrink:0;
+    background:rgba(255,255,255,.05);
+    border:1px solid color-mix(in srgb, var(--border) 100%, transparent);
+    border-radius:10px;display:grid;place-items:center;font-size:17px;
+  }
+  .notice .txt h4{font-size:14px;font-weight:800;margin-bottom:5px;color:var(--text)}
+  .notice.warn .txt h4{color:var(--yellow)}
+  .notice.info .txt h4{color:var(--accent-2)}
+  .notice:not(.warn):not(.info) .txt h4{color:var(--green)}
+  .notice .txt p{font-size:13.5px;color:var(--text-2);margin:0;line-height:1.65}
+
+  .updated{
+    text-align:center;color:var(--dim);font-size:13px;
+    padding:20px 0 0;border-top:1px solid var(--border);margin-top:12px;
+  }
+
+  footer{
+    margin-top:40px;padding-top:30px;border-top:1px solid var(--border);
+    text-align:center;color:var(--dim);font-size:13px;
+  }
+  footer .legal-links{
+    display:flex;gap:10px;flex-wrap:wrap;justify-content:center;
+    margin-bottom:16px;
+  }
+  footer .legal-links a{
+    display:inline-flex;align-items:center;gap:7px;
+    padding:8px 16px;border-radius:10px;
+    background:color-mix(in srgb, var(--card) 60%, transparent);
+    border:1px solid var(--border);
+    color:var(--text-2);text-decoration:none;
+    font-size:12.5px;font-weight:600;transition:.25s;
+  }
+  footer .legal-links a:hover{
+    border-color:var(--accent);color:var(--accent-2);
+    transform:translateY(-2px);
+  }
+  footer .legal-links a.active{
+    border-color:var(--accent);color:var(--accent-2);
+    box-shadow:0 0 0 1px color-mix(in srgb, var(--accent) 30%, transparent);
+  }
+
+  @media (max-width:640px){
+    .panel{padding:24px 22px;border-radius:16px}
+    .wrap{padding:36px 16px 80px}
+    .nav{padding:12px 16px}
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer">
+  <div class="orb o1"></div>
+  <div class="orb o2"></div>
+</div>
+
+<div class="announce">
+  <div class="announce-inner">
+    <span class="dot-live"></span>
+    <span class="label">Юридический документ —</span>
+    <a href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">Arizona Faraway — 26</a>
+  </div>
+</div>
+
+<nav class="nav">
+  <div class="nav-inner">
+    <a class="brand" href="index.html">
+      <span class="logo">⚡</span>
+      <span class="brand-text">
+        <span class="t">Arizona Faraway — 26</span>
+        <span class="s">юридическая информация</span>
+      </span>
+    </a>
+    <a class="nav-back" href="index.html">← На главную</a>
+  </div>
+</nav>
+
+<div class="wrap">
+
+  <header class="hero">
+    <div class="badge">📄 Документ</div>
+    <h1 class="hero-title">Пользовательское соглашение</h1>
+    <p class="hero-desc">Правила использования сайта Arizona Faraway — 26. Пожалуйста, прочитайте документ целиком перед использованием Сайта.</p>
+  </header>
+
+  <div class="toc">
+    <div class="toc-title">Содержание</div>
+    <ol>
+      <li><a href="#s1">Общие положения</a></li>
+      <li><a href="#s2">Термины и определения</a></li>
+      <li><a href="#s3">Использование Сайта</a></li>
+      <li><a href="#s4">Разделы обновлений, новостей и предложки</a></li>
+      <li><a href="#s5">Жалобы и заявки</a></li>
+      <li><a href="#s6">Аккаунты и авторизация</a></li>
+      <li><a href="#s7">Данные и приватность</a></li>
+      <li><a href="#s8">Внешние ссылки и сервисы</a></li>
+      <li><a href="#s9">Интеллектуальная собственность</a></li>
+      <li><a href="#s10">Ответственность</a></li>
+      <li><a href="#s11">Техническое обслуживание</a></li>
+      <li><a href="#s12">Изменения в Соглашении</a></li>
+      <li><a href="#s13">Контакты</a></li>
+    </ol>
+  </div>
+
+  <div class="panel" id="s1">
+    <h2><span class="num">1</span> Общие положения</h2>
+    <p>Настоящее Пользовательское соглашение (далее — «Соглашение») регулирует отношения между администрацией фан-сайта <b>Arizona Faraway — 26</b> (далее — «Сайт») и любым лицом, использующим Сайт (далее — «Пользователь»).</p>
+    <p>Сайт является <b>любительским информационным ресурсом</b> и <b>не является официальным ресурсом</b> проекта Arizona RP, компании Rockstar Games или иных правообладателей. Сайт не связан с администрацией игрового проекта Arizona RP и не выступает от её имени.</p>
+    <p>Используя Сайт любым способом (просмотр страниц, отправка форм, авторизация), Пользователь подтверждает, что ознакомился с Соглашением и принимает его условия в полном объёме. Если Пользователь не согласен с условиями — он обязан прекратить использование Сайта.</p>
+    <p>Соглашение действует бессрочно до момента публикации новой редакции.</p>
+  </div>
+
+  <div class="panel" id="s2">
+    <h2><span class="num">2</span> Термины и определения</h2>
+    <ul>
+      <li><b>Сайт</b> — совокупность страниц, размещённых по адресу, где опубликован этот документ, включая поддомены и вложенные страницы.</li>
+      <li><b>Администрация</b> — редакция фан-сообщества Arizona Faraway — 26, осуществляющая управление Сайтом.</li>
+      <li><b>Пользователь</b> — любое лицо, открывшее Сайт.</li>
+      <li><b>Администратор</b> — Пользователь, получивший доступ к панели управления Сайтом (страница <code>admin.html</code>).</li>
+      <li><b>Сервисы</b> — все разделы Сайта: обновления, новости, предложка, жалобы и заявки, а также вспомогательные страницы.</li>
+      <li><b>Контент</b> — текстовые, графические и иные материалы, размещённые на Сайте.</li>
+      <li><b>Техническое обслуживание</b> — режим, при котором публичный доступ к основному функционалу Сайта временно ограничен.</li>
+    </ul>
+  </div>
+
+  <div class="panel" id="s3">
+    <h2><span class="num">3</span> Использование Сайта</h2>
+    <p>Сайт предоставляется на условиях «как есть». Пользователь обязуется использовать Сайт добросовестно, в рамках действующего законодательства и настоящего Соглашения.</p>
+    <h3>Пользователь обязуется НЕ:</h3>
+    <ul class="cross">
+      <li>предпринимать попытки несанкционированного доступа к панели администратора, в том числе путём подбора паролей, токенов и обхода авторизации;</li>
+      <li>загружать, размещать и передавать вредоносный код, вирусы и любые средства автоматизированного воздействия на Сайт;</li>
+      <li>использовать автоматизированные средства массового сбора данных (парсинг, скрейпинг) без письменного согласия Администрации;</li>
+      <li>выдавать себя за представителей Администрации или за иных лиц;</li>
+      <li>размещать материалы, нарушающие законодательство, права третьих лиц или содержащие оскорбления;</li>
+      <li>использовать Сайт для распространения спама, мошеннических схем и рекламы, не согласованной с редакцией.</li>
+    </ul>
+    <p>Администрация вправе ограничить или прекратить доступ Пользователя к Сервисам Сайта при нарушении условий Соглашения, а также при технической необходимости.</p>
+  </div>
+
+  <div class="panel" id="s4">
+    <h2><span class="num">4</span> Разделы обновлений, новостей и предложки</h2>
+    <p>Раздел «Инфо сервера» включает в себя несколько веток:</p>
+    <ul>
+      <li><b>Обновления</b> — структурированные подборки изменений игрового процесса сервера, подготовленные редакцией на основе публичных источников, тестовых сборок и официальных анонсов.</li>
+      <li><b>Новости</b> — подборка публикаций из официального Telegram-канала Arizona Faraway — 26 и связанных с ним источников.</li>
+      <li><b>Предложка</b> — форма, через которую Пользователь может направить свои идеи и предложения по улучшению сервера.</li>
+      <li><b>Жалобы и заявки</b> — форма для передачи жалоб на игроков и заявок на собеседование (в том числе во фракции).</li>
+    </ul>
+    <p>Материалы носят <b>информационный и вспомогательный</b> характер. Администрация не гарантирует их полноту, точность и актуальность, а также не несёт ответственности за решения, принятые на их основе.</p>
+    <p>Администрация вправе удалять, редактировать и перемещать любые материалы в разделах по своему усмотрению, в том числе без предварительного уведомления авторов.</p>
+  </div>
+
+  <div class="panel" id="s5">
+    <h2><span class="num">5</span> Жалобы и заявки</h2>
+    <p>Отправляя жалобу, заявку или предложку через формы Сайта, Пользователь подтверждает, что:</p>
+    <ul>
+      <li>указанные им сведения достоверны и относятся к нему лично либо к лицу, чьи интересы он вправе представлять;</li>
+      <li>он не нарушает права третьих лиц, направляя такую информацию;</li>
+      <li>он осознаёт, что жалоба или заявка может быть отклонена без объяснения причин.</li>
+    </ul>
+    <p>Администрация Сайта <b>не является судебным органом</b> и не выступает гарантом разрешения игровых конфликтов. Формы предназначены лишь для удобной передачи информации в редакцию; итоговое решение по жалобе или заявке принимается в рамках игровых правил и компетенции уполномоченных лиц.</p>
+    <p>Пользователю запрещается направлять через формы заведомо ложные сведения, спам и материалы, нарушающие закон.</p>
+  </div>
+
+  <div class="panel" id="s6">
+    <h2><span class="num">6</span> Аккаунты и авторизация</h2>
+    <p>Основной функционал Сайта доступен без регистрации. Отдельные служебные возможности (панель управления) требуют авторизации. Доступ к панели предоставляется <b>исключительно по решению Администрации</b> и только ограниченному кругу лиц.</p>
+    <p>Авторизация может осуществляться через сторонние сервисы (Telegram, GitHub). Используя такие способы входа, Пользователь соглашается с правилами соответствующих сервисов и подтверждает, что действует от своего имени.</p>
+    <p>Администрация <b>не обязана</b> раскрывать причины отказа в предоставлении доступа к панели управления. Сессия авторизации может быть завершена в любой момент без объяснения причин.</p>
+  </div>
+
+  <div class="panel" id="s7">
+    <h2><span class="num">7</span> Данные и приватность</h2>
+    <p>Сайт минимально взаимодействует с данными Пользователя. Подробное описание того, какие данные обрабатываются, а какие — нет, приведено в отдельном документе:</p>
+    <div class="notice info">
+      <div class="ico">🔒</div>
+      <div class="txt">
+        <h4>Политика конфиденциальности</h4>
+        <p>Рекомендуем ознакомиться с <a href="privacy.html">Политикой конфиденциальности</a> — это часть настоящего Соглашения.</p>
+      </div>
+    </div>
+    <p>Кратко: Сайт не использует системы веб-аналитики и рекламные трекеры. Отдельные настройки (тема оформления, черновики администратора, признаки авторизации) хранятся локально в браузере Пользователя и не передаются третьим лицам, кроме случаев, прямо инициированных самим Пользователем.</p>
+  </div>
+
+  <div class="panel" id="s8">
+    <h2><span class="num">8</span> Внешние ссылки и сервисы</h2>
+    <p>Сайт содержит ссылки на внешние ресурсы: Telegram-каналы, барахолку, официальный форум проекта, вспомогательные сервисы и т. п. Такие ссылки предоставляются исключительно для удобства Пользователя.</p>
+    <p>Переходя по внешней ссылке, Пользователь покидает Сайт и начинает взаимодействовать со сторонним ресурсом. Администрация <b>не управляет</b> такими ресурсами и <b>не несёт ответственности</b>:</p>
+    <ul class="cross">
+      <li>за их доступность и работоспособность;</li>
+      <li>за содержание и достоверность информации;</li>
+      <li>за политику в отношении персональных данных;</li>
+      <li>за любые последствия использования таких ресурсов.</li>
+    </ul>
+    <p>Перед использованием сторонних сервисов Пользователю следует ознакомиться с их правилами и политикой конфиденциальности.</p>
+  </div>
+
+  <div class="panel" id="s9">
+    <h2><span class="num">9</span> Интеллектуальная собственность</h2>
+    <p>Все материалы, размещённые на Сайте — структура страниц, тексты описаний обновлений, аналитика, подборки, оформление — подготовлены редакцией фан-сообщества и охраняются как результат творческого труда.</p>
+    <p>При этом Администрация <b>не претендует</b> на права, принадлежащие:</p>
+    <ul>
+      <li>проекту <b>Arizona RP</b> и его официальным представителям;</li>
+      <li>компании <b>Rockstar Games</b> и правообладателям игры <b>Grand Theft Auto: San Andreas</b>;</li>
+      <li>иным правообладателям, чьи материалы могут цитироваться на Сайте в информационных целях.</li>
+    </ul>
+    <p>Названия, логотипы и торговые марки используются исключительно в целях идентификации и не выражают официальную позицию администрации проекта Arizona RP.</p>
+    <p>При копировании материалов Сайта на сторонние ресурсы просим указывать активную ссылку на Сайт и на Telegram-канал редакции.</p>
+  </div>
+
+  <div class="panel" id="s10">
+    <h2><span class="num">10</span> Ответственность</h2>
+    <p>Сайт предоставляется «как есть» и «как доступно». Администрация не гарантирует:</p>
+    <ul class="cross">
+      <li>бесперебойную и безошибочную работу Сайта;</li>
+      <li>точность, полноту и актуальность размещённой информации;</li>
+      <li>соответствие Сайта ожиданиям и целям Пользователя;</li>
+      <li>сохранность данных, отправленных Пользователем через формы Сайта.</li>
+    </ul>
+    <p>Администрация не несёт ответственности за любые прямые и косвенные убытки, упущенную выгоду, моральный вред и иные последствия, возникшие в результате использования или невозможности использования Сайта.</p>
+    <p>Информация об обновлениях может содержать данные тестовых сборок и <b>не совпадать с реальными значениями на боевых серверах</b>. Такая информация носит справочный характер.</p>
+  </div>
+
+  <div class="panel" id="s11">
+    <h2><span class="num">11</span> Техническое обслуживание</h2>
+    <p>Администрация вправе в любой момент и без предварительного уведомления перевести Сайт в режим <b>технического обслуживания</b>. В этом режиме публичный доступ к основному функционалу Сайта ограничивается: Пользователям отображается страница с указанием причины и статуса работ.</p>
+    <p>Доступ к панели управления при этом сохраняется за Администрацией.</p>
+    <p>Администрация не несёт ответственности за возможные неудобства и убытки, возникшие в период технического обслуживания.</p>
+  </div>
+
+  <div class="panel" id="s12">
+    <h2><span class="num">12</span> Изменения в Соглашении</h2>
+    <p>Администрация вправе изменять настоящее Соглашение в любое время без предварительного уведомления. Актуальная редакция всегда доступна по адресу этой страницы.</p>
+    <p>Продолжение использования Сайта после публикации изменений означает согласие Пользователя с новой редакцией. Если Пользователь не согласен с изменениями — он обязан прекратить использование Сайта.</p>
+
+    <div class="updated">
+      Последнее обновление: 3 октября 2026 года
+    </div>
+  </div>
+
+  <div class="panel" id="s13">
+    <h2><span class="num">13</span> Контакты</h2>
+    <p>Связь с редакцией осуществляется через официальный Telegram-канал:</p>
+    <p><a href="https://t.me/arizona_faraway26" target="_blank" rel="noopener">t.me/arizona_faraway26</a></p>
+    <p>По вопросам, связанным с авторскими правами и удалением материалов, пишите в редакцию через Telegram — мы рассмотрим обращение в разумный срок.</p>
+  </div>
+
+  <footer>
+    <div class="legal-links">
+      <a class="active" href="terms.html">📄 Пользовательское соглашение</a>
+      <a href="privacy.html">🔒 Политика конфиденциальности</a>
+      <a href="index.html">🏠 На главную</a>
+    </div>
+    <p>© 2026 · Arizona Faraway — 26 · фан-сайт сервера</p>
+  </footer>
+
+</div>
+
+<script src="maintenance.js"></script>
+<script src="theme.js"></script>
+</body>
+</html>

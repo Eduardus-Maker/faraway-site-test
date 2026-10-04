@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сообщество · Arizona Faraway — 26</title>
+<link rel="stylesheet" href="theme.css">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Inter','Segoe UI',system-ui,sans-serif;background:var(--bg-0);color:var(--text);line-height:1.65;min-height:100vh;background-image:var(--bg-image)}
+  .wrap{max-width:900px;margin:0 auto;padding:32px 22px 100px}
+  .head{display:flex;align-items:center;gap:14px;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border)}
+  .head .logo{width:46px;height:46px;background:linear-gradient(135deg,#ec4899,#8b5cf6);border-radius:13px;display:grid;place-items:center;font-size:22px;box-shadow:0 0 22px rgba(236,72,153,.5)}
+  .head .t{font-size:20px;font-weight:800}
+  .head .s{font-size:12.5px;color:var(--dim)}
+  .head .auth{margin-left:auto;font-size:12px;color:var(--dim)}
+  .head .auth b{color:var(--accent-2)}
+
+  .composer{
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--bg-2) 60%, transparent));
+    border:1px solid var(--border);border-radius:18px;padding:22px;margin-bottom:22px;
+  }
+  .composer textarea{
+    width:100%;min-height:90px;background:color-mix(in srgb, var(--bg-0) 60%, transparent);
+    border:1px solid var(--border);color:var(--text);border-radius:12px;padding:12px 14px;
+    font-family:inherit;font-size:14px;resize:vertical;outline:none;transition:.2s;
+  }
+  .composer textarea:focus{border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb, var(--accent) 15%, transparent)}
+  .composer .bar{display:flex;gap:10px;align-items:center;margin-top:10px;flex-wrap:wrap}
+  .composer .bar .char{font-size:11.5px;color:var(--dim);margin-right:auto}
+
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:10px 18px;border-radius:11px;font-size:13.5px;font-weight:700;font-family:inherit;cursor:pointer;border:none;transition:.25s;text-decoration:none;white-space:nowrap}
+  .btn-primary{background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff;box-shadow:0 6px 22px rgba(236,72,153,.4)}
+  .btn-primary:hover{transform:translateY(-2px)}
+  .btn-primary:disabled{opacity:.5;cursor:not-allowed;transform:none}
+  .btn-tg{background:linear-gradient(135deg,var(--tg),#1c7fb3);color:#fff}
+  .btn-ghost{background:color-mix(in srgb, var(--card) 70%, transparent);border:1px solid var(--border-2);color:var(--text)}
+  .btn-ghost:hover{border-color:var(--accent)}
+
+  .feed{display:flex;flex-direction:column;gap:12px}
+  .post{
+    background:linear-gradient(160deg,var(--card),color-mix(in srgb, var(--bg-2) 60%, transparent));
+    border:1px solid var(--border);border-radius:16px;padding:18px 20px;
+    transition:.25s;
+  }
+  .post:hover{border-color:var(--border-2);transform:translateY(-2px);box-shadow:0 12px 36px rgba(0,0,0,.4)}
+  .post .ph{display:flex;align-items:center;gap:11px;margin-bottom:10px}
+  .post .ph .av{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--tg),#1c7fb3);color:#fff;display:grid;place-items:center;font-weight:800;overflow:hidden;flex-shrink:0}
+  .post .ph .av img{width:100%;height:100%;object-fit:cover}
+  .post .ph .who{flex:1;min-width:0}
+  .post .ph .who b{font-size:14px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .post .ph .who span{font-size:11.5px;color:var(--dim)}
+  .post .txt{font-size:14.5px;color:var(--text);white-space:pre-wrap;word-wrap:break-word}
+  .post .ft{margin-top:12px;padding-top:10px;border-top:1px dashed var(--border);display:flex;gap:14px;font-size:12px;color:var(--dim)}
+
+  .empty,.loading{text-align:center;padding:60px 20px;color:var(--dim)}
+  .empty .big{font-size:52px;margin-bottom:14px;opacity:.5}
+
+  @media (max-width:640px){.wrap{padding:20px 14px 80px}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="head">
+    <div class="logo">💬</div>
+    <div>
+      <div class="t">Сообщество</div>
+      <div class="s">Arizona Faraway — 26 · посты игроков</div>
+    </div>
+    <div class="auth" id="authSlot">Загрузка…</div>
+  </div>
+
+  <div class="composer" id="composer" style="display:none">
+    <textarea id="postText" maxlength="2000" placeholder="Что нового, %username%? Гайд, скрин, мем, объявление…"></textarea>
+    <div class="bar">
+      <span class="char"><span id="charCount">0</span> / 2000</span>
+      <button class="btn btn-primary" id="postBtn">📤 Опубликовать</button>
+    </div>
+  </div>
+
+  <div class="composer" id="loginHint">
+    <p style="font-size:14px;color:var(--text-2);margin-bottom:12px">Войди через Telegram, чтобы писать посты в сообществе.</p>
+    <button class="btn btn-tg" id="loginBtn">Войти через Telegram</button>
+  </div>
+
+  <div class="feed" id="feed"><div class="loading">Загружаем посты…</div></div>
+</div>
+
+<script>
+const API_BASE = location.hostname === 'localhost' || location.hostname === '127.0.0.1'
+  ? 'http://localhost:8787'
+  : '';
+const TG_KEY = 'azfw26_tg_user';
+
+function getTgUser(){
+  try { return JSON.parse(localStorage.getItem(TG_KEY) || 'null'); } catch(e){ return null; }
+}
+function escapeHTML(s){
+  return String(s == null ? '' : s).replace(/[&<>"']/g, m => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[m]));
+}
+function fmtDate(ts){
+  const d = new Date(ts);
+  return d.toLocaleString('ru-RU', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit' });
+}
+
+function renderAuth(){
+  const u = getTgUser();
+  const slot = document.getElementById('authSlot');
+  const composer = document.getElementById('composer');
+  const hint = document.getElementById('loginHint');
+  const postText = document.getElementById('postText');
+  if(u){
+    slot.innerHTML = 'Вы вошли как <b>@' + escapeHTML(u.username || ('id' + u.id)) + '</b>';
+    composer.style.display = 'block';
+    hint.style.display = 'none';
+    postText.placeholder = 'Что нового, @' + (u.username || 'user') + '?';
+  } else {
+    slot.innerHTML = 'Анонимный просмотр';
+    composer.style.display = 'none';
+    hint.style.display = 'block';
+  }
+}
+
+async function loadPosts(){
+  const feed = document.getElementById('feed');
+  try {
+    const r = await fetch(API_BASE + '/api/posts?t=' + Date.now());
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    const data = await r.json();
+    const posts = data.posts || [];
+    if(!posts.length){
+      feed.innerHTML = '<div class="empty"><div class="big">📭</div><h3>Пока пусто</h3><p>Будь первым, кто напишет пост.</p></div>';
+      return;
+    }
+    feed.innerHTML = posts.map(p => `
+      <article class="post">
+        <div class="ph">
+          <div class="av">${p.photo_url ? `<img src="${escapeHTML(p.photo_url)}" alt="">` : (p.name || p.username || 'U').charAt(0).toUpperCase()}</div>
+          <div class="who">
+            <b>${escapeHTML(p.name || ('@' + p.username))}</b>
+            <span>@${escapeHTML(p.username)} · ${fmtDate(p.created_at)}</span>
+          </div>
+        </div>
+        <div class="txt">${escapeHTML(p.text)}</div>
+        <div class="ft"><span>👍 ${p.likes || 0}</span><span>💬 ${p.comments || 0}</span></div>
+      </article>
+    `).join('');
+  } catch(e){
+    feed.innerHTML = '<div class="empty"><div class="big">⚠️</div><h3>Не удалось загрузить</h3><p>' + escapeHTML(e.message) + '</p></div>';
+  }
+}
+
+document.getElementById('loginBtn').addEventListener('click', () => {
+  const tgWa = window.Telegram && window.Telegram.WebApp;
+  if(tgWa && tgWa.initDataUnsafe && tgWa.initDataUnsafe.user){
+    const u = tgWa.initDataUnsafe.user;
+    localStorage.setItem(TG_KEY, JSON.stringify({
+      id: u.id, username: u.username || ('id' + u.id),
+      first_name: u.first_name || '', last_name: u.last_name || '',
+      photo_url: u.photo_url || ''
+    }));
+    renderAuth();
+    return;
+  }
+  const uname = prompt('Telegram username (без @):');
+  if(!uname) return;
+  const clean = uname.replace(/^@/, '').trim();
+  if(!/^[A-Za-z0-9_]{4,32}$/.test(clean)){ alert('Некорректный username'); return; }
+  localStorage.setItem(TG_KEY, JSON.stringify({
+    id: 'manual_' + clean, username: clean,
+    first_name: clean, last_name: '', photo_url: ''
+  }));
+  renderAuth();
+});
+
+document.getElementById('postText').addEventListener('input', e => {
+  document.getElementById('charCount').textContent = e.target.value.length;
+});
+
+document.getElementById('postBtn').addEventListener('click', async () => {
+  const u = getTgUser();
+  if(!u){ alert('Сначала войди'); return; }
+  const text = document.getElementById('postText').value.trim();
+  if(text.length < 2){ alert('Слишком коротко'); return; }
+  const btn = document.getElementById('postBtn');
+  btn.disabled = true;
+  try {
+    const r = await fetch(API_BASE + '/api/posts', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, user: u })
+    });
+    if(!r.ok){ const d = await r.json().catch(() => ({})); throw new Error(d.error || 'HTTP ' + r.status); }
+    document.getElementById('postText').value = '';
+    document.getElementById('charCount').textContent = '0';
+    await loadPosts();
+  } catch(e){
+    alert('Ошибка: ' + e.message);
+  } finally {
+    btn.disabled = false;
+  }
+});
+
+renderAuth();
+loadPosts();
+</script>
+
+<script src="theme.js"></script>
+</body>
+</html>
